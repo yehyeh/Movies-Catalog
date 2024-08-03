@@ -11,7 +11,11 @@ import SwiftUI
 struct MoviesCatalogApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                let service = TMDB()
+                let viewModel = SearchViewModel(service: service)
+                SearchView(viewModel: viewModel)
+            }
         }
     }
 }
