@@ -34,8 +34,23 @@ struct SearchView: View {
 
     func listItem(_ movie: Movie) -> some View {
         HStack {
-            AsyncImage(url: movie.posterURL) { poster in
-                poster
+            posterImageView(for: movie.posterURL)
+
+            VStack(alignment: .leading) {
+                Text(movie.title)
+                    .font(.headline)
+                Text("\(movie.releaseDate), \(movie.voteAverage)")
+                    .font(.caption)
+                    .lineLimit(3)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func posterImageView(for url: URL?) -> some View {
+        if let url = url {
+            AsyncImage(url: url) { image in
+                image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 100)
@@ -43,14 +58,12 @@ struct SearchView: View {
                 ProgressView()
                     .frame(width: 100)
             }
-
-            VStack(alignment: .leading) {
-                Text(movie.title)
-                    .font(.headline)
-                Text("\(movie.releaseDate), \(movie.originalLanguage)")
-                    .font(.caption)
-                    .lineLimit(3)
-            }
+        } else {
+            Image(systemName: "film")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 100)
+                .foregroundColor(.gray)
         }
     }
 

@@ -10,8 +10,8 @@ import Foundation
 extension TMDB {
     struct MoviesResponse: Decodable {
         let page: Int?
-        let totalPages: Int
-        let totalResults: Int
+        let totalPages: Int?
+        let totalResults: Int?
         let results: [Movie]
     }
 }

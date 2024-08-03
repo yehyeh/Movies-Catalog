@@ -8,20 +8,20 @@
 import Foundation
 
 struct Movie: Decodable, Identifiable, Equatable {
-    let posterPath: String
-    let adult: Bool
-    let overview: String
-    let releaseDate: String
-    let genreIds: [Int]
     let id: Int
-    let originalTitle: String
-    let originalLanguage: String
     let title: String
-    let backdropPath: String
-    let popularity: Double
-    let voteCount: Int
-    let video: Bool
-    let voteAverage: Double
+    let overview: String
+    let posterPath: String?
+    let releaseDate: String
+    let voteAverage: Float
+    let genreIds: [Int]
+    let adult: Bool?
+    let originalTitle: String?
+    let originalLanguage: String?
+    let backdropPath: String?
+    let popularity: Double?
+    let voteCount: Int?
+    let video: Bool?
 
-    var posterURL: URL { URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")! }
+    var posterURL: URL? { posterPath != nil ? URL(string: "https://image.tmdb.org/t/p/w500\(posterPath!)") : nil }
 }

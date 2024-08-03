@@ -39,16 +39,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CBCC6D66-B0CA-4B3C-9A5A-255A628693EF"
+            uuid = "FF38B3A0-6281-4D34-A7E8-EED2ADCE004C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MoviesCatalog/Common/Services/Network/TMDB Service/TMDBSession.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "autoAuthAsGuest()"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "fetchData(request:successType:errorType:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
