@@ -8,13 +8,16 @@
 import Foundation
 
 extension Date {
-    static func appDefault(from dateString: String) -> Date? {
+    static func formatted(from dateString: String) -> Date? {
         DateFormatter.appDefault.date(from: dateString)
     }
 }
 
 extension DateFormatter {
     static var appDefault: DateFormatter {
-        Network.dateFormatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss ZZZZ"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        return dateFormatter
     }
 }

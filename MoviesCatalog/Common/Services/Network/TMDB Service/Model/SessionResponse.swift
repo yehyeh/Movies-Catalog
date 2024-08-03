@@ -14,11 +14,11 @@ extension TMDB.Session {
             let guestSessionId: String
             let expiresAt: String
         }
+    }
 
-        struct ErrorResponse: Decodable, Error {
-            let statusCode: Int
-            let statusMessage: String
-            let success: Bool
-        }
+    struct ErrorResponse: Decodable, Error {
+        let statusCode: Int
+        let statusMessage: String
+        let success: Bool
     }
 }

@@ -10,27 +10,19 @@ import Foundation
 class TMDB: MoviesService {
     private let session = Session()
 
-    func fetchHomePageItems() async throws -> [Movie] {
-        try await session.autoAuthAsGuest()
+    func fetchHomeItems() async -> Result<[Movie], Error> {
+        await session.autoAuthAsGuest()
 
-        guard let movie = TMDB.dummy else {
-            return []
-        }
-
-        return [movie]
+        return await session.homeItems()
     }
 
-    func search(query: String) async throws -> [Movie] {
-        try await session.autoAuthAsGuest()
+    func search(query: String) async -> Result<[Movie], Error> {
+        await session.autoAuthAsGuest()
 
-        guard let movie = TMDB.dummy else {
-            return []
-        }
-
-        return [movie]
+        return await session.search(query: query)
     }
 
-    func details(id: String) async throws -> Movie {
-        TMDB.dummy!
+    func details(id: String) async ->  Result<Movie, Error> {
+        .success(TMDB.dummy)
     }
 }

@@ -88,5 +88,5 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView(viewModel: SearchViewModel(service: TMDB()))
+    SearchView(viewModel: SearchViewModel(service: MockMoviesService()))
 }

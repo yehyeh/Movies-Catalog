@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    var jsonString: Data? {
-        Network.data(from: self)
+    var toData: Data? {
+        self.data(using: .utf8)
     }
 }

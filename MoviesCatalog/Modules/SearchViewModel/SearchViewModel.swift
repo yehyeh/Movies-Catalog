@@ -10,46 +10,35 @@ import Combine
 
 @MainActor
 final class SearchViewModel: ObservableObject {
-    private var service: MoviesService
-
-    init(service: MoviesService) {
-        self.service = service
-        bindSearchQueryIntoSearchResults()
-    }
-
     enum State {
         case loading
         case empty(query: String = "***", desc: String? = nil)
         case result([Movie])
     }
 
-    @Published var searchQuery: String = ""
-    @Published var state: State = .empty()
-    private var searchCancellable: AnyCancellable?
+    private let service: MoviesService
     private var subscriptions = Set<AnyCancellable>()
+    private var firstTime = true
 
-    func loadInitialData() {
-        guard case .empty(_,_) = state else { return }
+    @Published var searchQuery: String = ""
+    @Published var state: State = .loading
 
-        reload()
+    init(service: MoviesService) {
+        self.service = service
+        bindSearchQueryIntoSearchResults()
     }
 
-    func reload() {
-        Task {
-            do {
-                try await handleReload()
-            }
-            catch {
-                print("reload failed: \(error)")
-            }
+    func loadInitialData() {
+        if firstTime {
+            firstTime = false
+            reload()
         }
     }
 }
 
 private extension SearchViewModel {
-    func handleReload() async throws {
-        var result = [Movie]()
-        if case .result(let movies) = state, !movies.isEmpty {
+    func reload() {
+        if case .result(let movies) = state, movies.isEmpty {
             state = .loading
         } else {
             // trigger status bar loading indicator
@@ -57,20 +46,30 @@ private extension SearchViewModel {
 
         let query = trimmedQuery
         let isSearching = query.count >= 3
-        if isSearching {
-            result = await searchMovies(query: query)
-        } else {
-            result = await fetchHomeContent()
-        }
-
-        if result.isEmpty {
+        Task {
+            var result:Result<[Movie], Error>
             if isSearching {
-                state = .empty(query: query, desc: "Not found :\\")
+                result = await service.search(query: query)
             } else {
-                state = .empty(desc: "Something went wrong :\\")
+                result = await service.fetchHomeItems()
             }
-        } else {
-            state = .result(result)
+
+            switch result {
+                case .success(let results):
+                    if results.isEmpty {
+                        if isSearching {
+                            state = .empty(query: query, desc: "Not found")
+                        } else {
+                            state = .empty(desc: "Something went wrong")
+                        }
+                    } else {
+                        state = .result(results)
+                    }
+
+                case .failure(let e):
+                    print("yy_\(isSearching ? "Search" : "Fetch")Error: \(e)")
+                    state = .empty(desc: "Something went wrong")
+            }
         }
     }
 
@@ -84,27 +83,8 @@ private extension SearchViewModel {
         return cleanedQuery
     }
 
-    func searchMovies(query: String) async -> [Movie] {
-        do {
-            return try await service.search(query: query)
-        }
-        catch {
-            return []
-        }
-    }
-
-    func fetchHomeContent() async -> [Movie] {
-        do {
-            return try await service.fetchHomePageItems()
-        }
-        catch {
-            return []
-        }
-    }
-
     func bindSearchQueryIntoSearchResults() {
         $searchQuery
-            .receive(on: DispatchQueue.main)
             .debounce(for: 0.3, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] text in
