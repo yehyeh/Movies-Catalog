@@ -23,5 +23,5 @@ struct Movie: Decodable, Identifiable, Equatable {
     let video: Bool
     let voteAverage: Double
 
-    var posterURL: URL { URL(string: posterPath)! }
+    var posterURL: URL { URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")! }
 }
