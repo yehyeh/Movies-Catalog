@@ -15,17 +15,7 @@ struct CardView: View {
             posterView
             VStack {
                 gradientOverlay {
-                    HStack() {
-                        HStack {
-                            Text(movie.releaseYear)
-                                .font(.caption).bold()
-                        }
-                        Spacer()
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                        Text("\(movie.voteAverage, specifier: "%.1f")")
-                            .font(.caption).bold()
-                    }
+                    infoView
                 }
 
                 Spacer()
@@ -36,17 +26,18 @@ struct CardView: View {
         .clipped()
     }
 
-    private func gradientOverlay<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        content()
-            .padding()
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [.dynamicText.opacity(0.6), .clear]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .foregroundColor(.dynamicBackground)
+    private var infoView: some View {
+        HStack() {
+            HStack {
+                Text(movie.releaseYear)
+                    .font(.caption).bold()
+            }
+            Spacer()
+            Image(systemName: "star.fill")
+                .foregroundColor(.yellow)
+            Text("\(movie.voteAverage, specifier: "%.1f")")
+                .font(.caption).bold()
+        }
     }
 
     @ViewBuilder
@@ -65,6 +56,19 @@ struct CardView: View {
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.gray)
         }
+    }
+
+    private func gradientOverlay<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        content()
+            .padding()
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [.dynamicText.opacity(0.6), .clear]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .foregroundColor(.dynamicBackground)
     }
 }
 

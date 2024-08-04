@@ -7,15 +7,21 @@
 
 import SwiftUI
 
-struct HorizontalScrollableListView: View {
-    let items: [Movie]
+struct HorizontalScrollableListView<Item, Content>: View where Item: Identifiable, Content: View {
+    let showsIndicators: Bool = false
+    let items: [Item]
+    let content: (Item) -> Content
+
+    init(_ items: [Item], @ViewBuilder content: @escaping (Item) -> Content) {
+        self.items = items
+        self.content = content
+    }
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal, showsIndicators: showsIndicators) {
             HStack(spacing: 10) {
-                ForEach(items, id: \.self) { item in
-                    CardView(movie: item)
-                        .shadow(radius: 5)
+                ForEach(items) { item in
+                    content(item)
                 }
             }
             .padding()
@@ -25,7 +31,10 @@ struct HorizontalScrollableListView: View {
 
 struct HorizontalScrollableListView_Previews: PreviewProvider {
     static var previews: some View {
-        HorizontalScrollableListView(items: [Movie.mock, Movie.mock, Movie.mock, Movie.mock, Movie.mock])
+        HorizontalScrollableListView([Movie.mock, Movie.mock, Movie.mock, Movie.mock, Movie.mock]) { item in
+            CardView(movie: item)
+                .shadow(radius: 5)
+        }
     }
 }
 

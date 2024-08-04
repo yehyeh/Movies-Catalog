@@ -36,20 +36,21 @@ struct SearchView: View {
         }
     }
 
-    func viewForEmptyState(title: String, subtitle: String?) -> some View {
-        VStack (alignment: .center) {
-            Image(systemName: "film")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 100, height: 100)
-                .foregroundColor(.gray)
-            Text(title.localizedCapitalized)
-                .font(.title)
-                .foregroundColor(.gray)
-            if let subtitle {
-                Text(subtitle.localizedCapitalized)
-                    .font(.title2)
-                    .foregroundColor(.gray)
+    func viewFor(movies: [Movie]) -> some View {
+        VStack {
+            HorizontalScrollableListView(movies) { movie in
+                NavigationLink {
+                    Text(movie.title)
+                } label: {
+                    CardView(movie: movie)
+                }
+            }
+            List(movies) { movie in
+                NavigationLink {
+                    Text(movie.title)
+                } label: {
+                    listItem(movie)
+                }
             }
         }
     }
@@ -94,15 +95,20 @@ struct SearchView: View {
         }
     }
 
-    func viewFor(movies: [Movie]) -> some View {
-        VStack {
-            HorizontalScrollableListView(items: movies)
-            List(movies) { movie in
-                NavigationLink {
-                    Text(movie.title)
-                } label: {
-                    listItem(movie)
-                }
+    func viewForEmptyState(title: String, subtitle: String?) -> some View {
+        VStack (alignment: .center) {
+            Image(systemName: "film")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundColor(.gray)
+            Text(title.localizedCapitalized)
+                .font(.title)
+                .foregroundColor(.gray)
+            if let subtitle {
+                Text(subtitle.localizedCapitalized)
+                    .font(.title2)
+                    .foregroundColor(.gray)
             }
         }
     }
