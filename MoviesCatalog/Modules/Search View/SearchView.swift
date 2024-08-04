@@ -16,7 +16,7 @@ struct SearchView: View {
 
     func viewForEmptyState(title: String, subtitle: String?) -> some View {
         VStack (alignment: .center) {
-            Image(systemName: "flag.fill")
+            Image(systemName: "film")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
@@ -39,9 +39,14 @@ struct SearchView: View {
             VStack(alignment: .leading) {
                 Text(movie.title)
                     .font(.headline)
-                Text("\(movie.releaseDate), \(movie.voteAverage)")
+                Text(movie.releaseDate)
                     .font(.caption)
-                    .lineLimit(3)
+                HStack {
+                    Text("\(movie.voteAverage, specifier: "%.1f")")
+                        .font(.caption).bold()
+                    Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
+                }
             }
         }
     }

@@ -12,7 +12,7 @@ import Combine
 final class SearchViewModel: ObservableObject {
     enum State {
         case loading
-        case empty(query: String = "***", desc: String? = nil)
+        case empty(query: String = "", desc: String? = nil)
         case result([Movie])
     }
 
@@ -38,14 +38,11 @@ final class SearchViewModel: ObservableObject {
 
 private extension SearchViewModel {
     func reload() {
-        if case .result(let movies) = state, movies.isEmpty {
-            state = .loading
-        } else {
-            // trigger status bar loading indicator
-        }
+        state = .loading
 
         let query = trimmedQuery
         let isSearching = query.count >= 3
+        
         Task {
             var result:Result<[Movie], Error>
             if isSearching {
@@ -58,7 +55,7 @@ private extension SearchViewModel {
                 case .success(let results):
                     if results.isEmpty {
                         if isSearching {
-                            state = .empty(query: query, desc: "Not found")
+                            state = .empty(query: query, desc: "No results".localizedCapitalized)
                         } else {
                             state = .empty(desc: "Something went wrong")
                         }

@@ -23,6 +23,6 @@ class TMDB: MoviesService {
     }
 
     func details(id: String) async ->  Result<Movie, Error> {
-        .success(TMDB.dummy)
+        .success(.mock)
     }
 }
