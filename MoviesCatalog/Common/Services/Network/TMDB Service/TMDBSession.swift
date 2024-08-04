@@ -16,7 +16,7 @@ extension TMDB {
             if isSessionValid { return }
             do {
                 let successResponse = try await createGuestSession()
-                guard let expiryDate = Date.formatted(from: successResponse.expiresAt) else {
+                guard let expiryDate = Date.expiryDate(from: successResponse.expiresAt) else {
                     print("yy_ParsingFailed: \(successResponse)")
                     return
                 }

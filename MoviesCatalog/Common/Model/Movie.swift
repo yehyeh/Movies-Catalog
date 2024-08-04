@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie: Decodable, Identifiable, Equatable {
+struct Movie: Decodable, Identifiable, Equatable, Hashable {
     let id: Int
     let title: String
     let overview: String
@@ -23,6 +23,7 @@ struct Movie: Decodable, Identifiable, Equatable {
     let voteCount: Int?
     let video: Bool?
 
+    var releaseYear: String { Date.year(fromReleaseDate: releaseDate) }
     var posterURL: URL? { posterPath != nil ? URL(string: "https://image.tmdb.org/t/p/w500\(posterPath!)") : nil }
 }
 

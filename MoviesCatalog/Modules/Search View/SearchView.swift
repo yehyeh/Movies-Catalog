@@ -14,6 +14,28 @@ struct SearchView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
+    var body: some View {
+        content
+            .onAppear {
+                viewModel.loadInitialData()
+            }
+            .navigationTitle("Search movies".localizedCapitalized)
+            .searchable(text: $viewModel.searchQuery, prompt: "Type to search".localizedCapitalized)
+    }
+
+    var content: some View {
+        switch viewModel.state {
+            case .loading:
+                AnyView(ProgressView())
+
+            case .empty(let query, let desc):
+                AnyView(viewForEmptyState(title: query, subtitle: desc))
+
+            case .result(let movies):
+                AnyView(viewFor(movies: movies))
+        }
+    }
+
     func viewForEmptyState(title: String, subtitle: String?) -> some View {
         VStack (alignment: .center) {
             Image(systemName: "film")
@@ -39,7 +61,7 @@ struct SearchView: View {
             VStack(alignment: .leading) {
                 Text(movie.title)
                     .font(.headline)
-                Text(movie.releaseDate)
+                Text(movie.releaseYear)
                     .font(.caption)
                 HStack {
                     Text("\(movie.voteAverage, specifier: "%.1f")")
@@ -73,35 +95,16 @@ struct SearchView: View {
     }
 
     func viewFor(movies: [Movie]) -> some View {
-        List(movies) { movie in
-            NavigationLink {
-                Text(movie.title)
-            } label: {
-                listItem(movie)
+        VStack {
+            HorizontalScrollableListView(items: movies)
+            List(movies) { movie in
+                NavigationLink {
+                    Text(movie.title)
+                } label: {
+                    listItem(movie)
+                }
             }
         }
-    }
-
-    var content: some View {
-        switch viewModel.state {
-            case .loading:
-                AnyView(ProgressView())
-
-            case .empty(let query, let desc):
-                AnyView(viewForEmptyState(title: query, subtitle: desc))
-
-            case .result(let movies):
-                AnyView(viewFor(movies: movies))
-        }
-    }
-
-    var body: some View {
-        content
-            .onAppear {
-                viewModel.loadInitialData()
-            }
-            .navigationTitle("Search movies".localizedCapitalized)
-            .searchable(text: $viewModel.searchQuery, prompt: "Type to search".localizedCapitalized)
     }
 }
 

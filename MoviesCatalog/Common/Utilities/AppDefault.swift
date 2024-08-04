@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum AppDefault {
     static var jsonDecoder: JSONDecoder {
@@ -13,4 +14,8 @@ enum AppDefault {
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }
+
+
+    static var appBgColor: Color { .dynamicBackground }
+    static var appFgColor: Color { .dynamicText }
 }
