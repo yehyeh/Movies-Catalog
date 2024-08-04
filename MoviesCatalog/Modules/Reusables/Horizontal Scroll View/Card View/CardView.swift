@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct CardView: View {
     let movie: Movie
@@ -14,7 +15,7 @@ struct CardView: View {
         ZStack {
             posterView
             VStack {
-                gradientOverlay {
+                gradientBackground {
                     infoView
                 }
 
@@ -22,7 +23,7 @@ struct CardView: View {
             }
         }
         .frame(width: 120, height: 180)
-        .cornerRadius(16)
+        .cornerRadius(AppDefault.cornerRadius)
         .clipped()
     }
 
@@ -43,7 +44,7 @@ struct CardView: View {
     @ViewBuilder
     private var posterView: some View {
         if let url = movie.posterURL {
-            AsyncImage(url: url) { image in
+            CachedAsyncImage(url: url) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -51,24 +52,11 @@ struct CardView: View {
                 ProgressView()
             }
         } else {
-            Image(systemName: "photo")
+            Image(systemName: "film")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .foregroundColor(.gray)
         }
-    }
-
-    private func gradientOverlay<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-        content()
-            .padding()
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [.dynamicText.opacity(0.6), .clear]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .foregroundColor(.dynamicBackground)
     }
 }
 

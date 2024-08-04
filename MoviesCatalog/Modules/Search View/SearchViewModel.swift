@@ -23,6 +23,8 @@ final class SearchViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var state: State = .loading
 
+    var isSearching:Bool { trimmedQuery.count >= 3 }
+
     init(service: MoviesService) {
         self.service = service
         bindSearchQueryIntoSearchResults()
@@ -41,7 +43,6 @@ private extension SearchViewModel {
         state = .loading
 
         let query = trimmedQuery
-        let isSearching = query.count >= 3
         
         Task {
             var result:Result<[Movie], Error>

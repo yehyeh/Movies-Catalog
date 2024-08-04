@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct SearchView: View {
     @StateObject private var viewModel: SearchViewModel
@@ -37,21 +38,27 @@ struct SearchView: View {
     }
 
     func viewFor(movies: [Movie]) -> some View {
-        VStack {
-            HorizontalScrollableListView(movies) { movie in
-                NavigationLink {
-                    Text(movie.title)
-                } label: {
-                    CardView(movie: movie)
+        List {
+            Section("Top Rated Movies") {
+                HorizontalScrollableListView(movies) { movie in
+                    NavigationLink {
+                        DetailsView(viewModel: DetailsViewModel(movie: movie))
+                    } label: {
+                        CardView(movie: movie)
+                    }
                 }
             }
-            List(movies) { movie in
-                NavigationLink {
-                    Text(movie.title)
-                } label: {
-                    listItem(movie)
+//            if viewModel.isSearching {
+                Section("'\(viewModel.searchQuery)' Search Results") {
+                    List(movies) { movie in
+                        NavigationLink {
+                            DetailsView(viewModel: DetailsViewModel(movie: movie))
+                        } label: {
+                            listItem(movie)
+                        }
+                    }
                 }
-            }
+//            }
         }
     }
 
@@ -77,7 +84,7 @@ struct SearchView: View {
     @ViewBuilder
     private func posterImageView(for url: URL?) -> some View {
         if let url = url {
-            AsyncImage(url: url) { image in
+            CachedAsyncImage(url: url) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
