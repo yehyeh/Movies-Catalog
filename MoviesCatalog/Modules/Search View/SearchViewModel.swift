@@ -10,10 +10,13 @@ import Combine
 
 @MainActor
 final class SearchViewModel: ObservableObject {
-    enum State {
+    enum ViewState {
         case loading
         case empty(query: String = "", desc: String? = nil)
-        case result([Movie])
+        case search([Movie])
+        case home(header: [Movie],
+                  title1: String? = nil, list1: [Movie]? = nil,
+                  title2: String? = nil, list2: [Movie]? = nil)
     }
 
     private let service: MoviesService
@@ -21,9 +24,9 @@ final class SearchViewModel: ObservableObject {
     private var firstTime = true
 
     @Published var searchQuery: String = ""
-    @Published var state: State = .loading
+    @Published var state: ViewState = .loading
 
-    var isSearching:Bool { trimmedQuery.count >= 3 }
+    var isSearchable:Bool { trimmedQuery.count >= 3 }
 
     init(service: MoviesService) {
         self.service = service
@@ -33,39 +36,62 @@ final class SearchViewModel: ObservableObject {
     func loadInitialData() {
         if firstTime {
             firstTime = false
-            reload()
+
+            loadHomeItems()
         }
     }
 }
 
 private extension SearchViewModel {
-    func reload() {
+    func loadHomeItems() {
+        state = .loading
+        Task {
+            let result = await service.fetchHomeItems()
+            await MainActor.run {
+                self.handle(result: result)
+            }
+        }
+    }
+
+    func handle(result: Result<[Movie], SessionError>) {
+        switch result {
+            case .success(let results):
+                if results.isEmpty {
+                    if isSearchable {
+                        state = .empty(query: trimmedQuery, desc: "No results".localizedCapitalized)
+                    } else {
+                        state = .empty(desc: "Something went wrong".localizedCapitalized)
+                    }
+                } else {
+                    if isSearchable {
+                        state = .search(results)
+                    } else {
+                        state = .home(header: results)
+                    }
+                }
+
+            case .failure(let error):
+                //
+                // Not for Production (:
+                // For deubuging purpose !
+                state = .empty(query: error.errorDescription ?? "" , desc: "Something went wrong".localizedCapitalized)
+        }
+    }
+
+    func searchQueryChanged() {
+        guard isSearchable else {
+            loadHomeItems()
+            return
+        }
+
         state = .loading
 
         let query = trimmedQuery
-        
+
         Task {
-            var result:Result<[Movie], SessionError>
-            if isSearching {
-                result = await service.search(query: query)
-            } else {
-                result = await service.fetchHomeItems()
-            }
-
-            switch result {
-                case .success(let results):
-                    if results.isEmpty {
-                        if isSearching {
-                            state = .empty(query: query, desc: "No results".localizedCapitalized)
-                        } else {
-                            state = .empty(desc: "Something went wrong")
-                        }
-                    } else {
-                        state = .result(results)
-                    }
-
-                case .failure(let error):
-                    state = .empty(desc: error.errorDescription)
+            let result = await service.search(query: query)
+            await MainActor.run {
+                self.handle(result: result)
             }
         }
     }
@@ -82,10 +108,10 @@ private extension SearchViewModel {
 
     func bindSearchQueryIntoSearchResults() {
         $searchQuery
-            .debounce(for: 0.3, scheduler: DispatchQueue.main)
+            .debounce(for: 0.4, scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink { [weak self] text in
-                self?.reload()
+                self?.searchQueryChanged()
             }
             .store(in: &subscriptions)
     }

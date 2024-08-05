@@ -101,8 +101,13 @@ struct DetailsView: View {
             viewModel.playTrailer()
         }) {
             HStack {
-                Image(systemName: "play.fill")
+                if viewModel.isLoading {
+                    ProgressView().imageScale(.small)
+                } else {
+                    Image(systemName: "play.fill")
+                }
                 Text("Watch Trailer".localizedCapitalized)
+                    .padding(.leading)
             }
         }
         .font(.headline)
@@ -111,6 +116,7 @@ struct DetailsView: View {
         .foregroundColor(.white)
         .background(AppDefault.tintColor)
         .cornerRadius(AppDefault.cornerRadius)
+        .disabled(viewModel.isLoading)
     }
 
     private var shareButton: some View {

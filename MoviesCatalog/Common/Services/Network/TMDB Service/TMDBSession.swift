@@ -8,7 +8,7 @@
 import Foundation
 
 extension TMDB {
-    enum ApiUrl {
+    enum ApiUrl: Hashable {
         case createGuestAuth
         case search(query: String)
         case topRatedMovies(page: Int = 1)

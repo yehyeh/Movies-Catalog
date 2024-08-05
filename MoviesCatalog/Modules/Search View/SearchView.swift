@@ -31,33 +31,21 @@ struct SearchView: View {
             case .empty(let query, let desc):
                 AnyView(viewForEmptyState(title: query, subtitle: desc))
 
-            case .result(let movies):
+            case .search(let movies):
                 AnyView(viewFor(movies: movies))
+
+            case .home(let header,_,_,_,_):
+                AnyView(viewFor(movies: header))
         }
     }
 
     func viewFor(movies: [Movie]) -> some View {
-        List {
-            Section("Top Rated Movies") {
-                HorizontalScrollableListView(movies) { movie in
-                    NavigationLink {
-                        DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
-                    } label: {
-                        CardView(movie: movie)
-                    }
-                }
+        List(movies) { movie in
+            NavigationLink {
+                DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
+            } label: {
+                listItem(movie)
             }
-//            if viewModel.isSearching {
-                Section("'\(viewModel.searchQuery)' Search Results") {
-                    List(movies) { movie in
-                        NavigationLink {
-                            DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
-                        } label: {
-                            listItem(movie)
-                        }
-                    }
-                }
-//            }
         }
     }
 
@@ -81,7 +69,7 @@ struct SearchView: View {
     }
 
     @ViewBuilder
-    private func posterImageView(for url: URL?) -> some View {
+    func posterImageView(for url: URL?) -> some View {
         if let url = url {
             CachedAsyncImage(url: url) { image in
                 image

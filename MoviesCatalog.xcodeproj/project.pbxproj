@@ -36,6 +36,7 @@
 		0DC02EA62C5EAFDA0066893E /* Date_Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC02EA22C5EAFDA0066893E /* Date_Ex.swift */; };
 		0DC02EA82C5EB36E0066893E /* Data_Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC02EA72C5EB36E0066893E /* Data_Ex.swift */; };
 		0DD90F1B2C6165740038A4CF /* ShareLinkContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C592C611EF000EDF557 /* ShareLinkContent.swift */; };
+		0DD90F212C6174510038A4CF /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD90F202C6174510038A4CF /* Repository.swift */; };
 		0DF0AAE32C5ADF4800E5CA85 /* MoviesCatalogApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF0AAE22C5ADF4800E5CA85 /* MoviesCatalogApp.swift */; };
 		0DF0AAE52C5ADF4800E5CA85 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF0AAE42C5ADF4800E5CA85 /* SearchView.swift */; };
 		0DF0AAE72C5ADF4900E5CA85 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0DF0AAE62C5ADF4900E5CA85 /* Assets.xcassets */; };
@@ -87,6 +88,7 @@
 		0DC02E9F2C5EAFDA0066893E /* String_Ex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String_Ex.swift; sourceTree = "<group>"; };
 		0DC02EA22C5EAFDA0066893E /* Date_Ex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date_Ex.swift; sourceTree = "<group>"; };
 		0DC02EA72C5EB36E0066893E /* Data_Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data_Ex.swift; sourceTree = "<group>"; };
+		0DD90F202C6174510038A4CF /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		0DF0AADF2C5ADF4800E5CA85 /* MoviesCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoviesCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF0AAE22C5ADF4800E5CA85 /* MoviesCatalogApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesCatalogApp.swift; sourceTree = "<group>"; };
 		0DF0AAE42C5ADF4800E5CA85 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
@@ -220,6 +222,14 @@
 			path = "Empty State";
 			sourceTree = "<group>";
 		};
+		0DD90F1F2C6173F50038A4CF /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				0DD90F202C6174510038A4CF /* Repository.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		0DF0AAD62C5ADF4800E5CA85 = {
 			isa = PBXGroup;
 			children = (
@@ -341,6 +351,7 @@
 		0DF0AB122C5AE70600E5CA85 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0DD90F1F2C6173F50038A4CF /* Repository */,
 				0D6D5C5B2C61249000EDF557 /* Image Cache Manager */,
 				0DF0AB1A2C5BAC5900E5CA85 /* Network */,
 			);
@@ -503,6 +514,7 @@
 				0DC02E992C5E57160066893E /* AppDefault.swift in Sources */,
 				0DF0AB152C5AEA4300E5CA85 /* SearchViewModel.swift in Sources */,
 				0DC02EA82C5EB36E0066893E /* Data_Ex.swift in Sources */,
+				0DD90F212C6174510038A4CF /* Repository.swift in Sources */,
 				0D6D5C5A2C611EF000EDF557 /* ShareLinkContent.swift in Sources */,
 				0D71C1C22C5FE5D500C9F56C /* View_Ex.swift in Sources */,
 				0D71C1AD2C5F9CB400C9F56C /* Color_Ex.swift in Sources */,
