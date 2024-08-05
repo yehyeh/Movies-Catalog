@@ -45,7 +45,7 @@ extension TMDB {
 
         var url: URL {
             switch self {
-                case .shareMovie(let movieId):
+                case .shareMovie(_):
                     return URL(string: link)!
             }
         }

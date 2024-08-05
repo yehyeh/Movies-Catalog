@@ -28,6 +28,12 @@ final class DetailsViewModel: ObservableObject {
         generateShareContent()
     }
 
+    func playTrailer() {
+        if let url = trailer?.youtubeURL {
+            UIApplication.shared.open(url)
+        }
+    }
+
     func generateShareContent() {
         let image = if let posterURL = movie.posterURL,
             let poster = ImageCacheManager.shared.image(for: posterURL) {

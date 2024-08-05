@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct DetailsView: View {
-    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: DetailsViewModel
     private var movie: Movie { viewModel.movie }
 
@@ -17,10 +16,10 @@ struct DetailsView: View {
     }
 
     var body: some View {
-        ScrollView {
-            ZStack {
+        NavigationView {
+            ScrollView {
                 VStack(alignment: .leading) {
-                    posterView.safeAreaPadding(.top, -200)
+                    posterView
 
                     VStack(alignment: .leading) {
 
@@ -41,16 +40,17 @@ struct DetailsView: View {
                     }
                     .padding(.horizontal)
                 }
-
-                gradientBackground {
-                    toolbarButtons
-                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                shareButton
             }
         }
         .onAppear {
             viewModel.fetchInitialData()
         }
-        .navigationBarHidden(true)
     }
 
     private var title: some View {
@@ -98,7 +98,7 @@ struct DetailsView: View {
 
     private func trailerButton(url: URL) -> some View {
         Button(action: {
-            // Play trailer
+            viewModel.playTrailer()
         }) {
             HStack {
                 Image(systemName: "play.fill")
@@ -109,21 +109,12 @@ struct DetailsView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .foregroundColor(.white)
-        .background(AppDefault.tintColor.opacity(0.6))
+        .background(AppDefault.tintColor)
         .cornerRadius(AppDefault.cornerRadius)
     }
-    
-    private var backButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "chevron.left")
-                .bold()
-        }
-    }
-    
+
     private var shareButton: some View {
-        let button = Image(systemName: "square.and.arrow.up").bold()
+        let button = Image(systemName: "square.and.arrow.up")
         guard let share = viewModel.shareContent else {
             return AnyView(Button {
                 viewModel.generateShareContent()
@@ -138,23 +129,6 @@ struct DetailsView: View {
                                  preview: SharePreview(share.previewDesc, image: share.previewImage)) {
             button
         })
-    }
-
-    private var toolbarButtons: some View {
-        VStack {
-            HStack {
-                backButton
-                    .padding(.leading)
-
-                Spacer()
-                    .allowsHitTesting(false)
-
-                shareButton
-                    .padding(.trailing)
-            }
-            Spacer()
-                    .allowsHitTesting(false)
-        }
     }
 }
 
