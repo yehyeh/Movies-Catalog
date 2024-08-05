@@ -13,7 +13,7 @@ final class DetailsViewModel: ObservableObject {
     @Published var trailer: MovieTrailer?
     @Published var isLoading = false
     @Published var error: Error?
-    @Published var shareContent: SharedMovie? = nil
+    @Published var shareContent: ShareLinkContent? = nil
 
     let movie: Movie
     private let service: MoviesService
@@ -21,6 +21,29 @@ final class DetailsViewModel: ObservableObject {
     init(movie: Movie, service: MoviesService) {
         self.movie = movie
         self.service = service
+    }
+
+    func fetchInitialData() {
+        fetchTrailerURL()
+        generateShareContent()
+    }
+
+    func generateShareContent() {
+        let image = if let posterURL = movie.posterURL,
+            let poster = ImageCacheManager.shared.image(for: posterURL) {
+                poster
+            } else {
+                Image(systemName: "film")
+            }
+
+        let item = URL(string: movie.shareLink)!
+        let subject = "\(movie.title)(\(movie.releaseYear)) ⭐️\(String(format: "%.1f", movie.voteAverage))"
+        let message = "\(movie.shareLink) (shared via Movies-Catalog app)"
+        shareContent = .init(item: item,
+                             subject: subject,
+                             message: message,
+                             previewDesc: subject,
+                             previewImage: image)
     }
 
     func fetchTrailerURL() {

@@ -25,6 +25,7 @@ struct Movie: Decodable, Identifiable, Equatable, Hashable {
 
     var releaseYear: String { Date.year(fromReleaseDate: releaseDate) }
     var posterURL: URL? { posterPath != nil ? URL(string: "https://image.tmdb.org/t/p/w500\(posterPath!)") : nil }
+    var shareLink: String { TMDB.PublicUse.shareMovie(movieId: "\(id)").link }
 }
 
 extension Movie {

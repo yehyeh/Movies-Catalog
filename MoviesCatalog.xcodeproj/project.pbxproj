@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D6D5C5A2C611EF000EDF557 /* SharedMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C592C611EF000EDF557 /* SharedMovie.swift */; };
+		0D6D5C5A2C611EF000EDF557 /* ShareLinkContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C592C611EF000EDF557 /* ShareLinkContent.swift */; };
 		0D6D5C5D2C6124AC00EDF557 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C5C2C6124AC00EDF557 /* ImageCacheManager.swift */; };
 		0D6D5C612C61250800EDF557 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C602C61250800EDF557 /* CachedAsyncImage.swift */; };
 		0D71C1A42C5F8A6900C9F56C /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF0AB212C5BB56E00E5CA85 /* MoviesService.swift */; };
@@ -68,7 +68,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0D6D5C592C611EF000EDF557 /* SharedMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMovie.swift; sourceTree = "<group>"; };
+		0D6D5C592C611EF000EDF557 /* ShareLinkContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLinkContent.swift; sourceTree = "<group>"; };
 		0D6D5C5C2C6124AC00EDF557 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
 		0D6D5C602C61250800EDF557 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		0D71C1A82C5F8C5300C9F56C /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 			children = (
 				0D71C1B92C5FB80600C9F56C /* Mocks */,
 				0DF0AB172C5BABAD00E5CA85 /* Movie.swift */,
-				0D6D5C592C611EF000EDF557 /* SharedMovie.swift */,
+				0D6D5C592C611EF000EDF557 /* ShareLinkContent.swift */,
 				0D71C1D32C60E20800C9F56C /* MovieTrailer.swift */,
 			);
 			path = Model;
@@ -502,7 +502,7 @@
 				0DC02E992C5E57160066893E /* AppDefault.swift in Sources */,
 				0DF0AB152C5AEA4300E5CA85 /* SearchViewModel.swift in Sources */,
 				0DC02EA82C5EB36E0066893E /* Data_Ex.swift in Sources */,
-				0D6D5C5A2C611EF000EDF557 /* SharedMovie.swift in Sources */,
+				0D6D5C5A2C611EF000EDF557 /* ShareLinkContent.swift in Sources */,
 				0D71C1C22C5FE5D500C9F56C /* View_Ex.swift in Sources */,
 				0D71C1AD2C5F9CB400C9F56C /* Color_Ex.swift in Sources */,
 				0DC02EA62C5EAFDA0066893E /* Date_Ex.swift in Sources */,

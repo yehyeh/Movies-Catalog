@@ -33,6 +33,24 @@ extension TMDB {
         static let apiReadAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MjhmYTkyYjZiZjRhZTNlNTdlODA2MDYyN2YyYWVkNyIsIm5iZiI6MTcyMjUxNjE1Ni4zMTAwMDA3LCJzdWIiOiI2NmFiNzcyOTRmZTQyMTMxMGNkMmNhOGIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.jkiIGnm1OXQc6ICHudfo7qzVl0fkThyC1jo616B7-zI"
     }
 
+    enum PublicUse {
+        case shareMovie(movieId: String)
+
+        var link: String {
+            switch self {
+                case .shareMovie(let movieId):
+                    return "https://www.themoviedb.org/movie/\(movieId)"
+            }
+        }
+
+        var url: URL {
+            switch self {
+                case .shareMovie(let movieId):
+                    return URL(string: link)!
+            }
+        }
+    }
+
     static func makeNetworkRequest<T: Decodable>(
         endpoint: ApiUrl,
         successType: T.Type,

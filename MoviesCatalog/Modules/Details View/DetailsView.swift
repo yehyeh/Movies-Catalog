@@ -48,7 +48,7 @@ struct DetailsView: View {
             }
         }
         .onAppear {
-            viewModel.fetchTrailerURL()
+            viewModel.fetchInitialData()
         }
         .navigationBarHidden(true)
     }
@@ -121,23 +121,23 @@ struct DetailsView: View {
                 .bold()
         }
     }
-
+    
     private var shareButton: some View {
-//        let image = Image(uiImage: pickerImage) // YY_TODO: - ganarate screen snapshot
-//            //        viewModel.
-//        return ShareLink(item: image,
-//                         subject: Text("Cool Photo"),
-//                         message: Text("Check it out!"),
-//                         preview: SharePreview("Happy Birthday App", image: image)) {
-//            TrailingImageView(title: viewModel.shareButtonText, imageResource: ImageResource(name: viewModel.shareButtonImagePath, bundle: .main))
-//                .background(Color(hex: "EF7B7B"), in: Capsule())
-//        }
-        Button {
-                //                    viewModel.share
-        } label: {
-            Image(systemName: "square.and.arrow.up")
-                .bold()
+        let button = Image(systemName: "square.and.arrow.up").bold()
+        guard let share = viewModel.shareContent else {
+            return AnyView(Button {
+                viewModel.generateShareContent()
+            } label: {
+                button
+            })
         }
+
+        return AnyView(ShareLink(item: share.item,
+                                 subject: Text(share.subject),
+                                 message: Text(share.message),
+                                 preview: SharePreview(share.previewDesc, image: share.previewImage)) {
+            button
+        })
     }
 
     private var toolbarButtons: some View {
