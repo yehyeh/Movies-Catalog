@@ -9,16 +9,20 @@ import SwiftUI
 import CachedAsyncImage
 
 struct DetailsView: View {
-    @StateObject var viewModel: DetailsViewModel
     @Environment(\.dismiss) var dismiss
+    @StateObject private var viewModel: DetailsViewModel
+    private let movie: Movie
+
+    init(movie: Movie, viewModel: DetailsViewModel) {
+        self.movie = movie
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
-        ZStack {
-            ScrollView {
+        ScrollView {
+            ZStack {
                 VStack(alignment: .leading) {
-                    if let url = movie.posterURL {
-                        posterView(url: url)
-                    }
+                    posterView.safeAreaPadding(.top, -200)
 
                     VStack(alignment: .leading) {
 
@@ -30,7 +34,7 @@ struct DetailsView: View {
                         details
                             .padding(.top, 8)
 
-                        if let url = viewModel.trailerURL {
+                        if let url = viewModel.trailer?.youtubeURL {
                             trailerButton(url: url)
                                 .padding(.top, 8)
                         }
@@ -39,15 +43,17 @@ struct DetailsView: View {
                     }
                     .padding(.horizontal)
                 }
-            }
-            gradientBackground {
-                toolbarButtons
+
+                gradientBackground {
+                    toolbarButtons
+                }
             }
         }
-        .toolbar(.hidden)
+        .onAppear {
+            viewModel.fetchTrailerURL(for: movie)
+        }
+        .navigationBarHidden(true)
     }
-    
-    private var movie: Movie { viewModel.movie }
 
     private var title: some View {
         Text(movie.title)
@@ -79,18 +85,16 @@ struct DetailsView: View {
             .font(.body)
     }
 
-    private func posterView(url: URL) -> some View {
-        CachedAsyncImage(url: url) { phase in
-            if let image = phase.image {
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } else {
-                Image(systemName: "film")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.gray)
-            }
+    private var posterView: some View {
+        CachedAsyncImage(url: movie.posterURL) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } placeholder: {
+            Image(systemName: "film")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(.gray)
         }
     }
 
@@ -100,16 +104,15 @@ struct DetailsView: View {
         }) {
             HStack {
                 Image(systemName: "play.fill")
-                Text("Watch Trailer")
+                Text("Watch Trailer".localizedCapitalized)
             }
         }
         .font(.headline)
-        .foregroundColor(.white)
         .padding()
         .frame(maxWidth: .infinity)
+        .foregroundColor(.white)
         .background(AppDefault.tintColor.opacity(0.6))
         .cornerRadius(AppDefault.cornerRadius)
-        .padding(.top, 16)
     }
 
     private var toolbarButtons: some View {
@@ -119,7 +122,6 @@ struct DetailsView: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.left")
-                        .imageScale(.large)
                         .bold()
                 }
                 .padding(.leading)
@@ -128,10 +130,9 @@ struct DetailsView: View {
                     .allowsHitTesting(false)
 
                 Button {
-                    viewModel.share()
+//                    viewModel.share
                 } label: {
                     Image(systemName: "square.and.arrow.up")
-                        .imageScale(.large)
                         .bold()
                 }
                 .padding(.trailing)
@@ -143,5 +144,5 @@ struct DetailsView: View {
 }
 
 #Preview {
-    DetailsView(viewModel: DetailsViewModel(movie: .mock))
+    DetailsView(movie: .mock, viewModel: DetailsViewModel(service: MockMoviesService()))
 }

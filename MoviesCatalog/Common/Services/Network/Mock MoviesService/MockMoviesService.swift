@@ -18,8 +18,8 @@ class MockMoviesService: MoviesService {
         return .success([.mock])
     }
     
-    func details(id: String) async -> Result<Movie, any Error> {
+    func details(id: String) async -> Result<[MovieTrailer], any Error> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
-        return .success(.mock)
+        return .success( [.mock] )
     }
 }

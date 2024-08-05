@@ -22,7 +22,9 @@ class TMDB: MoviesService {
         return await session.search(query: query)
     }
 
-    func details(id: String) async ->  Result<Movie, Error> {
-        .success(.mock)
+    func details(id: String) async ->  Result<[MovieTrailer], Error> {
+        await session.autoAuthAsGuest()
+
+        return await session.trailers(movieId: id)
     }
 }

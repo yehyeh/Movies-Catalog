@@ -15,10 +15,4 @@ extension TMDB.Session {
             let expiresAt: String
         }
     }
-
-    struct ErrorResponse: Decodable, Error {
-        let statusCode: Int
-        let statusMessage: String
-        let success: Bool
-    }
 }

@@ -42,7 +42,7 @@ struct SearchView: View {
             Section("Top Rated Movies") {
                 HorizontalScrollableListView(movies) { movie in
                     NavigationLink {
-                        DetailsView(viewModel: DetailsViewModel(movie: movie))
+                        DetailsView(movie: movie, viewModel: DetailsViewModel(service: TMDB()))
                     } label: {
                         CardView(movie: movie)
                     }
@@ -52,7 +52,7 @@ struct SearchView: View {
                 Section("'\(viewModel.searchQuery)' Search Results") {
                     List(movies) { movie in
                         NavigationLink {
-                            DetailsView(viewModel: DetailsViewModel(movie: movie))
+                            DetailsView(movie: movie, viewModel: DetailsViewModel(service: TMDB()))
                         } label: {
                             listItem(movie)
                         }

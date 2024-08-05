@@ -23,5 +23,5 @@ enum SessionError: Error {
 protocol MoviesService {
     func fetchHomeItems() async -> Result<[Movie], Error>
     func search(query: String) async -> Result<[Movie], Error>
-    func details(id: String) async -> Result<Movie, Error>
+    func details(id: String) async -> Result<[MovieTrailer], Error>
 }

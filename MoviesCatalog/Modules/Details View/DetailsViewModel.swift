@@ -6,19 +6,36 @@
 //
 
 import SwiftUI
+import Combine
 
 @MainActor
 final class DetailsViewModel: ObservableObject {
-    let movie: Movie
+    @Published var trailer: MovieTrailer?
+    @Published var isLoading = false
+    @Published var error: Error?
 
-    init(movie: Movie) {
-        self.movie = movie
+    private let service: MoviesService
+
+    init(service: MoviesService) {
+        self.service = service
     }
 
-    var trailerURL: URL? { URL(string: "https://api.themoviedb.org") }
-    var posterURL: URL? { movie.posterURL }
+    func fetchTrailerURL(for movie: Movie) {
+        isLoading = true
 
-    func share() {
+        Task {
+            let result = await self.service.details(id: "\(movie.id)")
+            await MainActor.run {
+                switch result {
+                    case .success(let trailers):
+                        self.trailer = trailers.first { $0.youtubeURL != nil }
 
+                    case .failure(let error):
+                        self.error = error
+                        return
+                }
+                isLoading = false
+            }
+        }
     }
 }

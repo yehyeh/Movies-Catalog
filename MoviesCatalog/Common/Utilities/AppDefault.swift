@@ -20,4 +20,5 @@ enum AppDefault {
     static var appFgColor: Color { .dynamicText }
     static var cornerRadius: CGFloat = 16
     static var tintColor: Color { .blue }
+    static var placeholderColor: Color { .gray }
 }

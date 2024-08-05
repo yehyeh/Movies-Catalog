@@ -34,8 +34,15 @@ extension TMDB {
 
         func search(query: String) async -> Result<[Movie], Error> {
             do {
-                let results = try await fetchSearch(query: query).results
+                var request = URLRequest(url: ApiUrl.search(query: query))
+                request.httpMethod = "GET"
+                request.timeoutInterval = 20
+
+                let results = try await fetchData(request: request,
+                                                  successType: TMDB.MoviesResponse.self,
+                                                  errorType: ErrorResponse.self).results
                 return .success(results)
+
             } catch let error as ErrorResponse {
                 print("yy_SearchError: \(error.statusMessage)")
                 return .failure(error)
@@ -46,14 +53,41 @@ extension TMDB {
         }
 
         func homeItems(page: Int = 1) async -> Result<[Movie], Error> {
+            var request = URLRequest(url: ApiUrl.topRatedMovies(page: page))
+            request.httpMethod = "GET"
+            request.timeoutInterval = 20
+
             do {
-                let results = try await fetchHomeItems(page: page).results
+                let results = try await fetchData(request: request,
+                                                  successType: TMDB.MoviesResponse.self,
+                                                  errorType: ErrorResponse.self).results
+
                 return .success(results)
             } catch let error as ErrorResponse {
                 print("yy_HomeError: \(error.statusMessage)")
                 return .failure(error)
             } catch {
                 print("yy_HomeUnexpectedError: \(error)")
+                return .failure(error)
+            }
+        }
+
+        func trailers(movieId: String) async -> Result<[MovieTrailer], Error> {
+            do {
+                var request = URLRequest(url: ApiUrl.trailers(movieId: movieId))
+                request.httpMethod = "GET"
+                request.timeoutInterval = 20
+
+                let results = try await fetchData(request: request,
+                                                  successType: TMDB.TrailersResponse.self,
+                                                  errorType: ErrorResponse.self).results
+                return .success(results)
+
+            } catch let error as ErrorResponse {
+                print("yy_SearchError: \(error.statusMessage)")
+                return .failure(error)
+            } catch {
+                print("yy_SearchUnexpectedError: \(error)")
                 return .failure(error)
             }
         }
@@ -82,27 +116,7 @@ fileprivate extension TMDB.Session {
 
         return try await fetchData(request: request,
                                    successType: GuestAuth.SuccessResponse.self,
-                                   errorType: ErrorResponse.self)
-    }
-
-    func fetchSearch(query: String) async throws -> TMDB.MoviesResponse {
-        var request = URLRequest(url: ApiUrl.search(query: query))
-        request.httpMethod = "GET"
-        request.timeoutInterval = 20
-
-        return try await fetchData(request: request,
-                                   successType: TMDB.MoviesResponse.self,
-                                   errorType: ErrorResponse.self)
-    }
-
-    func fetchHomeItems(page: Int) async throws -> TMDB.MoviesResponse {
-        var request = URLRequest(url: ApiUrl.homeItems(page: page))
-        request.httpMethod = "GET"
-        request.timeoutInterval = 20
-
-        return try await fetchData(request: request,
-                                   successType: TMDB.MoviesResponse.self,
-                                   errorType: ErrorResponse.self)
+                                   errorType: TMDB.ErrorResponse.self)
     }
 
     func fetchData<T: Decodable, U: Decodable&Error>(request: URLRequest, successType: T.Type, errorType: U.Type) async throws -> T {
@@ -132,7 +146,7 @@ fileprivate extension TMDB.Session {
     enum ApiUrl {
         static var baseURL = "https://api.themoviedb.org/3"
 
-        static func homeItems(page: Int) -> URL {
+        static func topRatedMovies(page: Int) -> URL {
             URL(string:"\(baseURL)/movie/top_rated?api_key=\(ApiKeys.apiKey)&page=\(page)")!
         }
 
@@ -140,7 +154,11 @@ fileprivate extension TMDB.Session {
             let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
             return URL(string: "\(baseURL)/search/movie?query=\(encodedQuery)&api_key=\(ApiKeys.apiKey)")!
         }
-        
+
+        static func trailers(movieId: String) -> URL {
+            URL(string: "\(baseURL)movie/\(movieId)/videos?api_key=\(ApiKeys.apiKey)")!
+        }
+
         static var createGuestAuth: URL {
             URL(string:"\(baseURL)/authentication/guest_session/new")!
         }
