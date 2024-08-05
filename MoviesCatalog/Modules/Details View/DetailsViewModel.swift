@@ -13,14 +13,17 @@ final class DetailsViewModel: ObservableObject {
     @Published var trailer: MovieTrailer?
     @Published var isLoading = false
     @Published var error: Error?
+    @Published var shareContent: SharedMovie? = nil
 
+    let movie: Movie
     private let service: MoviesService
 
-    init(service: MoviesService) {
+    init(movie: Movie, service: MoviesService) {
+        self.movie = movie
         self.service = service
     }
 
-    func fetchTrailerURL(for movie: Movie) {
+    func fetchTrailerURL() {
         isLoading = true
 
         Task {

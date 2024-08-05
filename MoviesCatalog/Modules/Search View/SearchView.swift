@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 struct SearchView: View {
     @StateObject private var viewModel: SearchViewModel
@@ -42,7 +41,7 @@ struct SearchView: View {
             Section("Top Rated Movies") {
                 HorizontalScrollableListView(movies) { movie in
                     NavigationLink {
-                        DetailsView(movie: movie, viewModel: DetailsViewModel(service: TMDB()))
+                        DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
                     } label: {
                         CardView(movie: movie)
                     }
@@ -52,7 +51,7 @@ struct SearchView: View {
                 Section("'\(viewModel.searchQuery)' Search Results") {
                     List(movies) { movie in
                         NavigationLink {
-                            DetailsView(movie: movie, viewModel: DetailsViewModel(service: TMDB()))
+                            DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
                         } label: {
                             listItem(movie)
                         }

@@ -6,15 +6,13 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 struct DetailsView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel: DetailsViewModel
-    private let movie: Movie
+    private var movie: Movie { viewModel.movie }
 
-    init(movie: Movie, viewModel: DetailsViewModel) {
-        self.movie = movie
+    init(viewModel: DetailsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -50,7 +48,7 @@ struct DetailsView: View {
             }
         }
         .onAppear {
-            viewModel.fetchTrailerURL(for: movie)
+            viewModel.fetchTrailerURL()
         }
         .navigationBarHidden(true)
     }
@@ -114,35 +112,52 @@ struct DetailsView: View {
         .background(AppDefault.tintColor.opacity(0.6))
         .cornerRadius(AppDefault.cornerRadius)
     }
+    
+    private var backButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .bold()
+        }
+    }
+
+    private var shareButton: some View {
+//        let image = Image(uiImage: pickerImage) // YY_TODO: - ganarate screen snapshot
+//            //        viewModel.
+//        return ShareLink(item: image,
+//                         subject: Text("Cool Photo"),
+//                         message: Text("Check it out!"),
+//                         preview: SharePreview("Happy Birthday App", image: image)) {
+//            TrailingImageView(title: viewModel.shareButtonText, imageResource: ImageResource(name: viewModel.shareButtonImagePath, bundle: .main))
+//                .background(Color(hex: "EF7B7B"), in: Capsule())
+//        }
+        Button {
+                //                    viewModel.share
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+                .bold()
+        }
+    }
 
     private var toolbarButtons: some View {
         VStack {
             HStack {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.left")
-                        .bold()
-                }
-                .padding(.leading)
+                backButton
+                    .padding(.leading)
 
                 Spacer()
                     .allowsHitTesting(false)
 
-                Button {
-//                    viewModel.share
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .bold()
-                }
-                .padding(.trailing)
+                shareButton
+                    .padding(.trailing)
             }
-
             Spacer()
+                    .allowsHitTesting(false)
         }
     }
 }
 
 #Preview {
-    DetailsView(movie: .mock, viewModel: DetailsViewModel(service: MockMoviesService()))
+    DetailsView(viewModel: DetailsViewModel(movie: .mock, service: MockMoviesService()))
 }

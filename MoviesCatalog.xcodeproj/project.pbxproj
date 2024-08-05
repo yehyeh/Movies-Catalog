@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D6D5C5A2C611EF000EDF557 /* SharedMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C592C611EF000EDF557 /* SharedMovie.swift */; };
+		0D6D5C5D2C6124AC00EDF557 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C5C2C6124AC00EDF557 /* ImageCacheManager.swift */; };
+		0D6D5C612C61250800EDF557 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6D5C602C61250800EDF557 /* CachedAsyncImage.swift */; };
 		0D71C1A42C5F8A6900C9F56C /* MoviesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF0AB212C5BB56E00E5CA85 /* MoviesService.swift */; };
 		0D71C1AA2C5F8C5300C9F56C /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1A82C5F8C5300C9F56C /* CardView.swift */; };
 		0D71C1AB2C5F974300C9F56C /* Date_Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC02EA22C5EAFDA0066893E /* Date_Ex.swift */; };
@@ -22,7 +25,6 @@
 		0D71C1C32C5FE77300C9F56C /* View_Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1C12C5FE5D500C9F56C /* View_Ex.swift */; };
 		0D71C1CB2C60396400C9F56C /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1CA2C60396400C9F56C /* DetailsViewModel.swift */; };
 		0D71C1CC2C60396400C9F56C /* DetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1CA2C60396400C9F56C /* DetailsViewModel.swift */; };
-		0D71C1CF2C603A5200C9F56C /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 0D71C1CE2C603A5200C9F56C /* CachedAsyncImage */; };
 		0D71C1D42C60E20800C9F56C /* MovieTrailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1D32C60E20800C9F56C /* MovieTrailer.swift */; };
 		0D71C1D52C60E20800C9F56C /* MovieTrailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71C1D32C60E20800C9F56C /* MovieTrailer.swift */; };
 		0DC02E8B2C5CFF450066893E /* TMDBResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC02E8A2C5CFF450066893E /* TMDBResponse.swift */; };
@@ -66,6 +68,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D6D5C592C611EF000EDF557 /* SharedMovie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedMovie.swift; sourceTree = "<group>"; };
+		0D6D5C5C2C6124AC00EDF557 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		0D6D5C602C61250800EDF557 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
 		0D71C1A82C5F8C5300C9F56C /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		0D71C1AC2C5F9CB400C9F56C /* Color_Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color_Ex.swift; sourceTree = "<group>"; };
 		0D71C1B12C5F9F4000C9F56C /* HorizontalScrollableListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalScrollableListView.swift; sourceTree = "<group>"; };
@@ -102,7 +107,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D71C1CF2C603A5200C9F56C /* CachedAsyncImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +127,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D6D5C5B2C61249000EDF557 /* Image Cache Manager */ = {
+			isa = PBXGroup;
+			children = (
+				0D6D5C5C2C6124AC00EDF557 /* ImageCacheManager.swift */,
+			);
+			path = "Image Cache Manager";
+			sourceTree = "<group>";
+		};
+		0D6D5C5E2C6124EB00EDF557 /* Cached Async Image */ = {
+			isa = PBXGroup;
+			children = (
+				0D6D5C602C61250800EDF557 /* CachedAsyncImage.swift */,
+			);
+			path = "Cached Async Image";
+			sourceTree = "<group>";
+		};
 		0D71C1A92C5F8C5300C9F56C /* Card View */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +163,7 @@
 		0D71C1B02C5F9EFE00C9F56C /* Reusables */ = {
 			isa = PBXGroup;
 			children = (
+				0D6D5C5E2C6124EB00EDF557 /* Cached Async Image */,
 				0D71C1AF2C5F9EDD00C9F56C /* Horizontal Scroll View */,
 			);
 			path = Reusables;
@@ -297,6 +318,7 @@
 			children = (
 				0D71C1B92C5FB80600C9F56C /* Mocks */,
 				0DF0AB172C5BABAD00E5CA85 /* Movie.swift */,
+				0D6D5C592C611EF000EDF557 /* SharedMovie.swift */,
 				0D71C1D32C60E20800C9F56C /* MovieTrailer.swift */,
 			);
 			path = Model;
@@ -318,6 +340,7 @@
 		0DF0AB122C5AE70600E5CA85 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				0D6D5C5B2C61249000EDF557 /* Image Cache Manager */,
 				0DF0AB1A2C5BAC5900E5CA85 /* Network */,
 			);
 			path = Services;
@@ -359,7 +382,6 @@
 			);
 			name = MoviesCatalog;
 			packageProductDependencies = (
-				0D71C1CE2C603A5200C9F56C /* CachedAsyncImage */,
 			);
 			productName = MoviesCatalog;
 			productReference = 0DF0AADF2C5ADF4800E5CA85 /* MoviesCatalog.app */;
@@ -434,7 +456,6 @@
 			);
 			mainGroup = 0DF0AAD62C5ADF4800E5CA85;
 			packageReferences = (
-				0D71C1CD2C603A5200C9F56C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 			);
 			productRefGroup = 0DF0AAE02C5ADF4800E5CA85 /* Products */;
 			projectDirPath = "";
@@ -481,12 +502,14 @@
 				0DC02E992C5E57160066893E /* AppDefault.swift in Sources */,
 				0DF0AB152C5AEA4300E5CA85 /* SearchViewModel.swift in Sources */,
 				0DC02EA82C5EB36E0066893E /* Data_Ex.swift in Sources */,
+				0D6D5C5A2C611EF000EDF557 /* SharedMovie.swift in Sources */,
 				0D71C1C22C5FE5D500C9F56C /* View_Ex.swift in Sources */,
 				0D71C1AD2C5F9CB400C9F56C /* Color_Ex.swift in Sources */,
 				0DC02EA62C5EAFDA0066893E /* Date_Ex.swift in Sources */,
 				0DF0AAE52C5ADF4800E5CA85 /* SearchView.swift in Sources */,
 				0D71C1CB2C60396400C9F56C /* DetailsViewModel.swift in Sources */,
 				0DC02E912C5E49660066893E /* TMDB.swift in Sources */,
+				0D6D5C612C61250800EDF557 /* CachedAsyncImage.swift in Sources */,
 				0DC02E8B2C5CFF450066893E /* TMDBResponse.swift in Sources */,
 				0DC02EA32C5EAFDA0066893E /* String_Ex.swift in Sources */,
 				0DF0AB182C5BABAD00E5CA85 /* Movie.swift in Sources */,
@@ -499,6 +522,7 @@
 				0D71C1AA2C5F8C5300C9F56C /* CardView.swift in Sources */,
 				0DF0AB222C5BB56E00E5CA85 /* MoviesService.swift in Sources */,
 				0D71C1B22C5F9F4000C9F56C /* HorizontalScrollableListView.swift in Sources */,
+				0D6D5C5D2C6124AC00EDF557 /* ImageCacheManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,25 +870,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		0D71C1CD2C603A5200C9F56C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		0D71C1CE2C603A5200C9F56C /* CachedAsyncImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0D71C1CD2C603A5200C9F56C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
-			productName = CachedAsyncImage;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0DF0AAD72C5ADF4800E5CA85 /* Project object */;
 }
