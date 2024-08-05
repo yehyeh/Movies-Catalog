@@ -6,166 +6,121 @@
 //
 
 import Foundation
-import Combine
 
 extension TMDB {
-    class Session {
-        private var authentication: AuthenticationType = .none
-
-        func autoAuthAsGuest() async {
-            if isSessionValid { return }
-            do {
-                let successResponse = try await createGuestSession()
-                guard let expiryDate = Date.expiryDate(from: successResponse.expiresAt) else {
-                    print("yy_ParsingFailed: \(successResponse)")
-                    return
-                }
-                authentication = .guest(expiryDate: expiryDate, sessionId: successResponse.guestSessionId)
-
-            } catch let error as ErrorResponse {
-                authentication = .none
-                print("yy_Error: \(error.statusMessage)")
-
-            } catch {
-                authentication = .none
-                print("yy_UnexpectedError: \(error)")
-            }
-        }
-
-        func search(query: String) async -> Result<[Movie], Error> {
-            do {
-                var request = URLRequest(url: ApiUrl.search(query: query))
-                request.httpMethod = "GET"
-                request.timeoutInterval = 20
-
-                let results = try await fetchData(request: request,
-                                                  successType: TMDB.MoviesResponse.self,
-                                                  errorType: ErrorResponse.self).results
-                return .success(results)
-
-            } catch let error as ErrorResponse {
-                print("yy_SearchError: \(error.statusMessage)")
-                return .failure(error)
-            } catch {
-                print("yy_SearchUnexpectedError: \(error)")
-                return .failure(error)
-            }
-        }
-
-        func homeItems(page: Int = 1) async -> Result<[Movie], Error> {
-            var request = URLRequest(url: ApiUrl.topRatedMovies(page: page))
-            request.httpMethod = "GET"
-            request.timeoutInterval = 20
-
-            do {
-                let results = try await fetchData(request: request,
-                                                  successType: TMDB.MoviesResponse.self,
-                                                  errorType: ErrorResponse.self).results
-
-                return .success(results)
-            } catch let error as ErrorResponse {
-                print("yy_HomeError: \(error.statusMessage)")
-                return .failure(error)
-            } catch {
-                print("yy_HomeUnexpectedError: \(error)")
-                return .failure(error)
-            }
-        }
-
-        func trailers(movieId: String) async -> Result<[MovieTrailer], Error> {
-            do {
-                var request = URLRequest(url: ApiUrl.trailers(movieId: movieId))
-                request.httpMethod = "GET"
-                request.timeoutInterval = 20
-
-                let results = try await fetchData(request: request,
-                                                  successType: TMDB.TrailersResponse.self,
-                                                  errorType: ErrorResponse.self).results
-                return .success(results)
-
-            } catch let error as ErrorResponse {
-                print("yy_SearchError: \(error.statusMessage)")
-                return .failure(error)
-            } catch {
-                print("yy_SearchUnexpectedError: \(error)")
-                return .failure(error)
-            }
-        }
-    }
-}
-
-fileprivate extension TMDB.Session {
-    var isSessionValid: Bool {
-        switch authentication {
-            case .guest:
-                return true
-
-            case .none:
-                return false
-        }
-    }
-
-    func createGuestSession() async throws -> GuestAuth.SuccessResponse {
-        var request = URLRequest(url: ApiUrl.createGuestAuth)
-        request.httpMethod = "GET"
-        request.timeoutInterval = 10
-        request.allHTTPHeaderFields = [
-            "accept": "application/json",
-            "Authorization": "Bearer \(ApiKeys.apiReadAccessToken)"
-        ]
-
-        return try await fetchData(request: request,
-                                   successType: GuestAuth.SuccessResponse.self,
-                                   errorType: TMDB.ErrorResponse.self)
-    }
-
-    func fetchData<T: Decodable, U: Decodable&Error>(request: URLRequest, successType: T.Type, errorType: U.Type) async throws -> T {
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw URLError(.badServerResponse)
-            }
-
-            switch httpResponse.statusCode {
-                case 200:
-                    let successResponse = try AppDefault.jsonDecoder.decode(T.self, from: data)
-                    return successResponse
-
-                default:
-                    let errorResponse = try AppDefault.jsonDecoder.decode(U.self, from: data)
-                    throw errorResponse
-            }
-        } catch {
-            throw error
-        }
-    }
-}
-
-fileprivate extension TMDB.Session {
     enum ApiUrl {
-        static var baseURL = "https://api.themoviedb.org/3"
+        case createGuestAuth
+        case search(query: String)
+        case topRatedMovies(page: Int = 1)
+        case trailers(movieId: String)
 
-        static func topRatedMovies(page: Int) -> URL {
-            URL(string:"\(baseURL)/movie/top_rated?api_key=\(ApiKeys.apiKey)&page=\(page)")!
-        }
-
-        static func search(query: String) -> URL {
-            let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-            return URL(string: "\(baseURL)/search/movie?query=\(encodedQuery)&api_key=\(ApiKeys.apiKey)")!
-        }
-
-        static func trailers(movieId: String) -> URL {
-            URL(string: "\(baseURL)movie/\(movieId)/videos?api_key=\(ApiKeys.apiKey)")!
-        }
-
-        static var createGuestAuth: URL {
-            URL(string:"\(baseURL)/authentication/guest_session/new")!
+        var url: URL {
+            switch self {
+                case .createGuestAuth:
+                    return URL(string: "https://api.themoviedb.org/3/authentication/guest_session/new")!
+                case .search(let query):
+                    return URL(string: "https://api.themoviedb.org/3/search/movie?query=\(query)")!
+                case .topRatedMovies(let page):
+                    return URL(string: "https://api.themoviedb.org/3/movie/top_rated?page=\(page)")!
+                case .trailers(let movieId):
+                    return URL(string: "https://api.themoviedb.org/3/movie/\(movieId)/videos")!
+            }
         }
     }
 
     enum ApiKeys {
         static let apiKey = "928fa92b6bf4ae3e57e8060627f2aed7"
         static let apiReadAccessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MjhmYTkyYjZiZjRhZTNlNTdlODA2MDYyN2YyYWVkNyIsIm5iZiI6MTcyMjUxNjE1Ni4zMTAwMDA3LCJzdWIiOiI2NmFiNzcyOTRmZTQyMTMxMGNkMmNhOGIiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.jkiIGnm1OXQc6ICHudfo7qzVl0fkThyC1jo616B7-zI"
+    }
+
+    static func makeNetworkRequest<T: Decodable>(
+        endpoint: ApiUrl,
+        successType: T.Type,
+        innerContext: String
+    ) async -> Result<T, SessionError> {
+        do {
+            let request = createGetRequest(url: endpoint.url)
+            return try await fetchData(request: request, successType: T.self)
+        } catch {
+            print("yy_Error_\(innerContext): \(error.localizedDescription)")
+            return .failure(.general(error))
+        }
+    }
+
+    static func createGetRequest(url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 20
+        request.allHTTPHeaderFields = [
+            "accept": "application/json",
+            "Authorization": "Bearer \(ApiKeys.apiReadAccessToken)"
+        ]
+        return request
+    }
+
+    static func fetchData<T: Decodable>(request: URLRequest, successType: T.Type) async throws -> Result <T,SessionError> {
+        let (data, response) = try await URLSession.shared.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            return .failure(.networkError(URLError(.badServerResponse).localizedDescription))
+        }
+
+        switch httpResponse.statusCode {
+            case 200:
+                let result = try AppDefault.jsonDecoder.decode(T.self, from: data)
+                return .success(result)
+
+            default:
+                do {
+                    let errorResponse = try AppDefault.jsonDecoder.decode(TMDB.ErrorResponse.self, from: data)
+                    return .failure(.tmdbError(errorResponse))
+                } catch {
+                    return .failure(.networkError("\(httpResponse.statusCode):\(httpResponse.description)"))
+                }
+
+        }
+    }
+}
+
+extension TMDB {
+        /// Session Auth preperation that turns out to be redundant
+    class Session {
+        private var authentication: AuthenticationType = .none
+
+        var isSessionValid: Bool {
+            if case .guest(_, _) = authentication {
+                return true
+            }
+            return false
+        }
+
+            //
+            /// Automatic Auth preperation that turns out to be redundant
+            /// - Returns: Auth Error for feedback in case of failure, or nil in case of success
+        func autoAuthAsGuest() async -> SessionError? {
+            if isSessionValid { return nil }
+            let innerContext = "Guest Auth session"
+
+            let result = await TMDB.makeNetworkRequest(
+                endpoint: TMDB.ApiUrl.createGuestAuth,
+                successType: GuestAuth.SuccessResponse.self,
+                innerContext: "Guest Auth session")
+            switch result {
+
+                case .success(let response):
+                    guard let expiryDate = Date.expiryDate(from: response.expiresAt) else {
+                        print("yy_\(innerContext)_ParsingFailed: \(response.expiresAt)")
+                        let error: SessionError = .invalidResponse
+                        authentication = .failed(error: error)
+                        return error
+                    }
+                    authentication = .guest(expiryDate: expiryDate, sessionId: response.guestSessionId)
+
+                case .failure(let error):
+                    authentication = .failed(error: .general(error))
+                    return error
+            }
+            return nil
+        }
     }
 }

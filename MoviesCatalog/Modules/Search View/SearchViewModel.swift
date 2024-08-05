@@ -45,7 +45,7 @@ private extension SearchViewModel {
         let query = trimmedQuery
         
         Task {
-            var result:Result<[Movie], Error>
+            var result:Result<[Movie], SessionError>
             if isSearching {
                 result = await service.search(query: query)
             } else {
@@ -64,9 +64,8 @@ private extension SearchViewModel {
                         state = .result(results)
                     }
 
-                case .failure(let e):
-                    print("yy_\(isSearching ? "Search" : "Fetch")Error: \(e)")
-                    state = .empty(desc: "Something went wrong")
+                case .failure(let error):
+                    state = .empty(desc: error.errorDescription)
             }
         }
     }

@@ -8,17 +8,17 @@
 import Foundation
 
 class MockMoviesService: MoviesService {
-    func fetchHomeItems() async -> Result<[Movie], any Error> {
+    func fetchHomeItems() async -> Result<[Movie], SessionError> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         return .success([.mock, .mock])
     }
     
-    func search(query: String) async -> Result<[Movie], any Error> {
+    func search(query: String) async -> Result<[Movie], SessionError> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         return .success([.mock])
     }
     
-    func details(id: String) async -> Result<[MovieTrailer], any Error> {
+    func details(id: String) async -> Result<[MovieTrailer], SessionError> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         return .success( [.mock] )
     }
