@@ -8,41 +8,43 @@
 import Foundation
 
 protocol UserDefaultsProtocol {
-    func set(_ value: Any?, forKey defaultName: UserDefaultsKeys)
-    func value(forKey defaultName: UserDefaultsKeys) -> Any?
-    func string(forKey defaultName: UserDefaultsKeys) -> String?
-    func integer(forKey defaultName: UserDefaultsKeys) -> Int
-    func bool(forKey defaultName: UserDefaultsKeys) -> Bool
-    func removeObject(forKey defaultName: UserDefaultsKeys)
+    func set(_ value: Any?, forKey key: UserDefaultsKey)
+    func value(forKey key: UserDefaultsKey) -> Any?
+    func string(forKey key: UserDefaultsKey) -> String?
+    func integer(forKey key: UserDefaultsKey) -> Int
+    func bool(forKey key: UserDefaultsKey) -> Bool
+    func removeObject(forKey key: UserDefaultsKey)
 }
 
 extension UserDefaults: UserDefaultsProtocol {
-    func set(_ value: Any?, forKey key: UserDefaultsKeys) {
+    func set(_ value: Any?, forKey key: UserDefaultsKey) {
         self.set(value, forKey: key.key)
     }
 
-    func value(forKey key: UserDefaultsKeys) -> Any? {
+    func value(forKey key: UserDefaultsKey) -> Any? {
         return self.value(forKey: key.key)
     }
 
-    func string(forKey key: UserDefaultsKeys) -> String? {
+    func string(forKey key: UserDefaultsKey) -> String? {
         return self.string(forKey: key.key)
     }
 
-    func bool(forKey key: UserDefaultsKeys) -> Bool {
+    func bool(forKey key: UserDefaultsKey) -> Bool {
         return self.bool(forKey: key.key)
     }
 
-    func integer(forKey key: UserDefaultsKeys) -> Int {
+    func integer(forKey key: UserDefaultsKey) -> Int {
         return self.integer(forKey: key.key)
     }
 
-    func removeObject(forKey key: UserDefaultsKeys) {
+    func removeObject(forKey key: UserDefaultsKey) {
         self.removeObject(forKey: key.key)
     }
 }
 
-enum UserDefaultsKeys: String {
+enum UserDefaultsKey: String {
+    case editorChoice
+    case favorites
     case isGridLayout
 
     var key: String {

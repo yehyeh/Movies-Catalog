@@ -22,12 +22,12 @@ struct ListCellView: View {
             Text(movie.title)
                 .font(.headline)
             Text(movie.releaseYear)
-                .font(.caption)
+                .font(.subheadline)
             HStack {
                 Image(systemName: AppDefault.starSFPath)
                     .foregroundColor(.starApp)
                 Text("\(movie.voteAverage, specifier: "%.1f")")
-                    .font(.caption).bold()
+                    .font(.subheadline).bold()
             }
         }
     }

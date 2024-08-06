@@ -19,8 +19,9 @@ final class SearchViewModel: ObservableObject {
                   title2: String? = nil, list2: [Movie]? = nil)
     }
 
-    private let userDefaults: UserDefaultsProtocol
     private let service: MoviesService
+    private let favorites: FavoritesService
+    private let userDefaults: UserDefaultsProtocol
     private var subscriptions = Set<AnyCancellable>()
     private var firstTime = true
 
@@ -30,9 +31,10 @@ final class SearchViewModel: ObservableObject {
 
     var isSearchable:Bool { trimmedQuery.count >= 3 }
 
-    init(userDefaults: UserDefaultsProtocol, service: MoviesService) {
-        self.userDefaults = userDefaults
+    init(service: MoviesService, favorites: FavoritesService, userDefaults: UserDefaultsProtocol) {
         self.service = service
+        self.favorites = favorites
+        self.userDefaults = userDefaults
         isGridLayout = userDefaults.bool(forKey: .isGridLayout)
         bindSearchQueryIntoSearchResults()
     }
@@ -48,6 +50,10 @@ final class SearchViewModel: ObservableObject {
     func toggleGridLayout() {
         isGridLayout = !isGridLayout
         userDefaults.set(isGridLayout, forKey: .isGridLayout)
+    }
+
+    func isFavorite(movieId: Int) -> Bool {
+        favorites.isFavorite(movieId: movieId)
     }
 }
 

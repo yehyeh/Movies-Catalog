@@ -8,29 +8,29 @@
 import Foundation
 
 class MockUserDefaults: UserDefaultsProtocol {
-    private var store: [UserDefaultsKeys: Any] = [:]
+    private var store: [UserDefaultsKey: Any] = [:]
 
-    func set(_ value: Any?, forKey defaultName: UserDefaultsKeys) {
-        store[defaultName] = value
+    func set(_ value: Any?, forKey key: UserDefaultsKey) {
+        store[key] = value
     }
 
-    func value(forKey defaultName: UserDefaultsKeys) -> Any? {
-        return store[defaultName]
+    func value(forKey key: UserDefaultsKey) -> Any? {
+        return store[key]
     }
 
-    func string(forKey defaultName: UserDefaultsKeys) -> String? {
-        return store[defaultName] as? String
+    func string(forKey key: UserDefaultsKey) -> String? {
+        return store[key] as? String
     }
 
-    func integer(forKey defaultName: UserDefaultsKeys) -> Int {
-        return store[defaultName] as? Int ?? 0
+    func integer(forKey key: UserDefaultsKey) -> Int {
+        return store[key] as? Int ?? 0
     }
 
-    func bool(forKey defaultName: UserDefaultsKeys) -> Bool {
-        return store[defaultName] as? Bool ?? false
+    func bool(forKey key: UserDefaultsKey) -> Bool {
+        return store[key] as? Bool ?? false
     }
 
-    func removeObject(forKey defaultName: UserDefaultsKeys) {
-        store.removeValue(forKey: defaultName)
+    func removeObject(forKey key: UserDefaultsKey) {
+        store.removeValue(forKey: key)
     }
 }

@@ -65,7 +65,7 @@ struct SearchView: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 160))], spacing: 16) {
                 ForEach(movies) { movie in
                     NavigationLink {
-                        DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
+                        ScreenFactory.shared.makeMovieDetailView(movie: movie)
                     } label: {
                         CardView(movie: movie)
                     }
@@ -78,7 +78,7 @@ struct SearchView: View {
     func listFor(movies: [Movie]) -> some View {
         List(movies) { movie in
             NavigationLink {
-                DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
+                ScreenFactory.shared.makeMovieDetailView(movie: movie)
             } label: {
                 ListCellView(movie: movie)
             }
@@ -105,5 +105,5 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView(viewModel: SearchViewModel(userDefaults: MockUserDefaults(), service: MockMoviesService()))
+    SearchView(viewModel: SearchViewModel(service: MockMoviesService(), favorites: MockFavoritesService(), userDefaults: MockUserDefaults()))
 }

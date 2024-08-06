@@ -23,8 +23,16 @@ struct DetailsView: View {
 
                     VStack(alignment: .leading) {
 
-                        title
-                            .padding(.vertical, 8)
+                        HStack {
+                            title
+                            
+                            Spacer()
+
+                            VStack {
+                                favoriteButton
+                            }
+                        }
+                        .padding(.vertical, 8)
 
                         subtitle
 
@@ -136,8 +144,20 @@ struct DetailsView: View {
             button
         })
     }
+
+    private var favoriteButton: some View {
+        Button {
+            viewModel.toggleIsFavorite()
+        } label: {
+            Image(systemName: viewModel.isFavorite ?
+                  AppDefault.favoriteOnSFPath : AppDefault.favoriteOffSFPath)
+            .tint(.red)
+            .imageScale(.large)
+        }
+        .shadow(radius: 1)
+    }
 }
 
 #Preview {
-    DetailsView(viewModel: DetailsViewModel(movie: .mock, service: MockMoviesService()))
+    DetailsView(viewModel: DetailsViewModel(movie: .mock, service: MockMoviesService(), favorites: MockFavoritesService()))
 }

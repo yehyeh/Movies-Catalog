@@ -22,4 +22,7 @@ enum AppDefault {
     static var shareSFPath: String = "square.and.arrow.up"
     static var toggleGridOffSFPath: String = "rectangle.grid.1x2"
     static var toggleGridOnSFPath: String = "square.grid.2x2"
+    static var favoriteOffSFPath: String = "suit.heart"
+    static var favoriteOnSFPath: String = "suit.heart.fill"
+    static var EditorChoiceSFPath: String = "trophy.fill"
 }

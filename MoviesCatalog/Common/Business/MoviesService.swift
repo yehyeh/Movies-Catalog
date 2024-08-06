@@ -41,6 +41,7 @@ enum SessionError: Error, LocalizedError {
         }
     }
 }
+
 protocol MoviesService {
     func fetchHomeItems() async -> Result<[Movie], SessionError>
     func search(query: String) async -> Result<[Movie], SessionError>

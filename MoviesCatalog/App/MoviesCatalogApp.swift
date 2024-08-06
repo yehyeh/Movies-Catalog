@@ -12,9 +12,7 @@ struct MoviesCatalogApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                let service = TMDB()
-                let viewModel = SearchViewModel(userDefaults: UserDefaults.standard, service: service)
-                SearchView(viewModel: viewModel)
+                ScreenFactory.shared.makeHomeView()
             }
         }
     }

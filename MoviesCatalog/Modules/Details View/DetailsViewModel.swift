@@ -12,15 +12,20 @@ import Combine
 final class DetailsViewModel: ObservableObject {
     @Published var trailer: MovieTrailer?
     @Published var isLoading = false
+    @Published var isFavorite = false
     @Published var error: Error?
     @Published var shareContent: ShareLinkContent? = nil
 
-    let movie: Movie
     private let service: MoviesService
+    private let favorites: FavoritesService
 
-    init(movie: Movie, service: MoviesService) {
+    let movie: Movie
+
+    init(movie: Movie, service: MoviesService, favorites: FavoritesService) {
         self.movie = movie
         self.service = service
+        self.favorites = favorites
+        isFavorite = self.favorites.isFavorite(movieId: movie.id)
     }
 
     func fetchInitialData() {
@@ -31,6 +36,15 @@ final class DetailsViewModel: ObservableObject {
     func playTrailer() {
         if let url = trailer?.youtubeURL {
             UIApplication.shared.open(url)
+        }
+    }
+
+    func toggleIsFavorite() {
+        isFavorite = !isFavorite
+        if isFavorite {
+            favorites.removeFavorite(movieId: movie.id)
+        } else {
+            favorites.addFavorite(movieId: movie.id)
         }
     }
 
