@@ -54,9 +54,25 @@ struct SearchView: View {
     
     func viewFor(movies: [Movie]) -> some View {
         if viewModel.isGridLayout {
+//            AnyView(horizontalList(movies: movies))
             AnyView(gridFor(movies: movies))
         } else {
             AnyView(listFor(movies: movies))
+        }
+    }
+
+    //
+    //TODO: Integrate to display favorites !
+    func horizontalList(movies: [Movie]) -> some View {
+        ScrollView {
+            HorizontalScrollableListView(movies) { movie in
+                NavigationLink {
+                    ScreenFactory.shared.makeMovieDetailView(movie: movie)
+                } label: {
+                    CardView(movie: movie)
+                }
+            }
+            .padding()
         }
     }
 
