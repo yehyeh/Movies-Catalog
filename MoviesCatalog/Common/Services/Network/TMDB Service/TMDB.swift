@@ -8,27 +8,81 @@
 import Foundation
 
 class TMDB: MoviesService {
-    private static var homeItems: [Movie] = []
-
-    // A dictionary to cache results for each API URL
+    var favoriteIds: [Int] = []
+    // A thread-safe Repository to cache results for each API URL
+    private static var failedIds: Repository<String, Set<Int>> = .init(maxCapacity: .max)
+    private static var cached: Repository<Int, Movie> = .init(maxCapacity: .max)
+    private static var homeItems: Repository<ContextTitle, Result<[Movie], SessionError>> = .init(maxCapacity: .max)
     private static var search: Repository<ApiUrl, [Movie]> = .init()
     private static var details: Repository<ApiUrl, [MovieTrailer]> = .init()
 
-    func fetchHomeItems() async -> Result<[Movie], SessionError> {
-        if !Self.homeItems.isEmpty {
-            return .success(Self.homeItems)
-        }
+    func fetchMovies(ids: [Int], context: String) async -> Result<[Movie], SessionError> {
+        await withTaskGroup(of: (Int, Result<Movie, SessionError>).self) { group in
+            for id in ids {
+                group.addTask {
+                    return (id, await self.fetchMovie(id: id, context: context))
+                }
+            }
 
-        switch await TMDB.makeNetworkRequest(
-            endpoint: .topRatedMovies(),
+            var movies = [Movie]()
+            var failed = [String: [Int]]()
+            for await (id, result) in group {
+                switch result {
+                    case .success(let movie):
+                        movies.append(movie)
+
+                    case .failure(let error):
+                        if var listed = failed[error.keyDecription] {
+                            listed.append(id)
+                            print("yy_failedFetch_\(id)_\(error.keyDecription)")
+                        } else {
+                            failed[error.keyDecription] = [id]
+                        }
+                }
+            }
+
+            for (desc, ids) in failed {
+                Self.failedIds.storeResult(for: desc, result: Set(ids))
+            }
+            Self.homeItems.storeResult(for: .batch(ids: ids, name: context), result: .success(movies))
+
+            if movies.isEmpty {
+                return .failure(.itemNotFound)
+            }
+            return .success(movies)
+        }
+    }
+
+    func fetchHomeItems() async -> [ContextTitle: Result<[Movie], SessionError>] {
+        let upcoming = await fetchMovies(endpoint: .upcoming, context: .upcoming)
+        let topRated = await fetchMovies(endpoint: .topRatedMovies(), context: .topRated)
+        let favs = await fetchMovies(ids: favoriteIds, context: "Favorites")
+        return Self.homeItems.dataSource
+    }
+
+    private func fetchMovies(endpoint: ApiUrl, context: ContextTitle) async -> Result<[Movie], SessionError> {
+        switch await Self.makeNetworkRequest(
+            endpoint: endpoint,
             successType: MoviesResponse.self,
-            innerContext: "Home Items") {
+            innerContext: context.title) {
             case .success(let success):
-                Self.homeItems = success.results
-                return .success(Self.homeItems)
+                return .success(success.results)
             case .failure(let error):
                 return .failure(error)
         }
+    }
+
+    func fetchMovie(id: Int, context: String) async ->  Result<Movie, SessionError> {
+        if let movie = Self.cached.getResult(for: id) {
+            return .success(movie)
+        }
+        let result  = await Self.makeNetworkRequest(endpoint: .movie(id: id),
+                                                    successType: Movie.self,
+                                                    innerContext: context)
+        if case .success(let movie) = result {
+            Self.cached.storeResult(for: movie.id, result: movie)
+        }
+        return result
     }
 
     func search(query: String) async -> Result<[Movie], SessionError> {
@@ -38,7 +92,7 @@ class TMDB: MoviesService {
             return .success(results)
         }
 
-        switch await TMDB.makeNetworkRequest(
+        switch await Self.makeNetworkRequest(
             endpoint: endpoint,
             successType: MoviesResponse.self,
             innerContext: "Search") {
@@ -50,14 +104,14 @@ class TMDB: MoviesService {
         }
     }
 
-    func details(id: String) async ->  Result<[MovieTrailer], SessionError> {
+    func details(id: Int) async ->  Result<[MovieTrailer], SessionError> {
         let endpoint: ApiUrl = .trailers(movieId: id)
 
         if let results = Self.details.getResult(for: endpoint), !results.isEmpty {
             return .success(results)
         }
 
-        switch await TMDB.makeNetworkRequest(
+        switch await Self.makeNetworkRequest(
             endpoint: endpoint,
             successType: TrailersResponse.self,
             innerContext: "Trailers") {

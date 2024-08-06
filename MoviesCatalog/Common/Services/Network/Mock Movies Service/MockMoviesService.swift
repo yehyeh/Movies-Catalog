@@ -8,9 +8,14 @@
 import Foundation
 
 class MockMoviesService: MoviesService {
-    func fetchHomeItems() async -> Result<[Movie], SessionError> {
+    func fetchMovies(ids: [Int], context: String) async -> Result<[Movie], SessionError> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         return .success([.mock, .mock])
+    }
+    
+    func fetchHomeItems() async -> Result<[String : [Movie]], SessionError> {
+        try! await Task.sleep(nanoseconds: 1_000_000_000)
+        return .success(["Home" : [.mock, .mock]])
     }
     
     func search(query: String) async -> Result<[Movie], SessionError> {
@@ -18,7 +23,7 @@ class MockMoviesService: MoviesService {
         return .success([.mock])
     }
     
-    func details(id: String) async -> Result<[MovieTrailer], SessionError> {
+    func details(id: Int) async -> Result<[MovieTrailer], SessionError> {
         try! await Task.sleep(nanoseconds: 1_000_000_000)
         return .success( [.mock] )
     }

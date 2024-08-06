@@ -11,8 +11,10 @@ extension TMDB {
     enum ApiUrl: Hashable {
         case createGuestAuth
         case search(query: String)
+        case movie(id: Int)
         case topRatedMovies(page: Int = 1)
-        case trailers(movieId: String)
+        case upcoming
+        case trailers(movieId: Int)
 
         var url: URL {
             switch self {
@@ -22,6 +24,10 @@ extension TMDB {
                     return URL(string: "https://api.themoviedb.org/3/search/movie?query=\(query)")!
                 case .topRatedMovies(let page):
                     return URL(string: "https://api.themoviedb.org/3/movie/top_rated?page=\(page)")!
+                case .upcoming:
+                    return URL(string: "https://api.themoviedb.org/3/movie/upcoming")!
+                case .movie(let movieId):
+                    return URL(string: "https://api.themoviedb.org/3/movie/\(movieId)")!
                 case .trailers(let movieId):
                     return URL(string: "https://api.themoviedb.org/3/movie/\(movieId)/videos")!
             }
@@ -64,7 +70,9 @@ extension TMDB {
             return .failure(.general(error))
         }
     }
+}
 
+private extension TMDB {
     static func createGetRequest(url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -96,49 +104,6 @@ extension TMDB {
                     return .failure(.networkError("\(httpResponse.statusCode):\(httpResponse.description)"))
                 }
 
-        }
-    }
-}
-
-extension TMDB {
-        /// Session Auth preperation that turns out to be redundant
-    class Session {
-        private var authentication: AuthenticationType = .none
-
-        var isSessionValid: Bool {
-            if case .guest(_, _) = authentication {
-                return true
-            }
-            return false
-        }
-
-            //
-            /// Automatic Auth preperation that turns out to be redundant
-            /// - Returns: Auth Error for feedback in case of failure, or nil in case of success
-        func autoAuthAsGuest() async -> SessionError? {
-            if isSessionValid { return nil }
-            let innerContext = "Guest Auth session"
-
-            let result = await TMDB.makeNetworkRequest(
-                endpoint: TMDB.ApiUrl.createGuestAuth,
-                successType: GuestAuth.SuccessResponse.self,
-                innerContext: "Guest Auth session")
-            switch result {
-
-                case .success(let response):
-                    guard let expiryDate = Date.expiryDate(from: response.expiresAt) else {
-                        print("yy_\(innerContext)_ParsingFailed: \(response.expiresAt)")
-                        let error: SessionError = .invalidResponse
-                        authentication = .failed(error: error)
-                        return error
-                    }
-                    authentication = .guest(expiryDate: expiryDate, sessionId: response.guestSessionId)
-
-                case .failure(let error):
-                    authentication = .failed(error: .general(error))
-                    return error
-            }
-            return nil
         }
     }
 }

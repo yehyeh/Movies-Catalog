@@ -70,7 +70,7 @@ final class DetailsViewModel: ObservableObject {
         isLoading = true
 
         Task {
-            let result = await self.service.details(id: "\(movie.id)")
+            let result = await self.service.details(id: movie.id)
             await MainActor.run {
                 switch result {
                     case .success(let trailers):

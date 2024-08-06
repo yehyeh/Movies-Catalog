@@ -13,7 +13,6 @@ struct MovieTrailer: Codable {
     let key: String
     let publishedAt: String
     let site: String
-        //    let size: Int
     let type: String
     let official: Bool
 }

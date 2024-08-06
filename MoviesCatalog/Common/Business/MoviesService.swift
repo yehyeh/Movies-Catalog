@@ -7,12 +7,6 @@
 
 import Foundation
 
-enum AuthenticationType {
-    case none
-    case failed(error: SessionError)
-    case guest(expiryDate: Date?, sessionId: String?)
-}
-
 enum SessionError: Error, LocalizedError {
     case authenticationFailed
     case sessionExpired
@@ -22,7 +16,7 @@ enum SessionError: Error, LocalizedError {
     case tmdbError(TMDB.ErrorResponse)
     case general(Error)
 
-    var errorDescription: String? {
+    var errorDescription: String {
         switch self {
             case .authenticationFailed:
                 return "Authentication failed. Please try again."
@@ -40,10 +34,47 @@ enum SessionError: Error, LocalizedError {
                 return e.localizedDescription
         }
     }
+
+    var keyDecription: String {
+        switch self {
+            case .authenticationFailed:
+                return "authenticationFailed"
+            case .sessionExpired:
+                return "sessionExpired"
+            case .networkError(let message):
+                return "networkError: \(message)"
+            case .invalidResponse:
+                return "invalidResponse"
+            case .itemNotFound:
+                return "itemNotFound"
+            case .tmdbError(let error):
+                return "tmdbError(\(error.statusCode))"
+            case .general(let error):
+                return "general(\(error.localizedDescription))"
+        }
+    }
+}
+
+enum ContextTitle: Hashable {
+    case upcoming
+    case topRated
+    case batch(ids: [Int], name: String)
+
+    var title: String {
+        switch self {
+            case .upcoming:
+                return "Upcoming".localizedCapitalized
+            case .topRated:
+                return "Top Rated".localizedCapitalized
+            case .batch(_ ,let name):
+                return name.localizedCapitalized
+        }
+    }
 }
 
 protocol MoviesService {
-    func fetchHomeItems() async -> Result<[Movie], SessionError>
+    func fetchMovies(ids: [Int], context: String) async -> Result<[Movie], SessionError> 
+    func fetchHomeItems() async -> [ContextTitle: Result<[Movie], SessionError>]
     func search(query: String) async -> Result<[Movie], SessionError>
-    func details(id: String) async -> Result<[MovieTrailer], SessionError>
+    func details(id: Int) async -> Result<[MovieTrailer], SessionError>
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 final class Repository<Key: Hashable, Value> {
-    private var dataSource: [Key: Value] = [:]
+    private(set) var dataSource: [Key: Value] = [:]
     private let queue = DispatchQueue(label: "com.repository.\(UUID())")
     let maxCapacity: Int
 
