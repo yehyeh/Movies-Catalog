@@ -68,8 +68,8 @@ struct DetailsView: View {
             Spacer()
 
             HStack(alignment: .center) {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
+                Image(systemName: AppDefault.starSFPath)
+                    .foregroundColor(.starApp)
 
                 Text("\(movie.voteAverage, specifier: "%.1f")")
                     .font(.title2)
@@ -89,10 +89,10 @@ struct DetailsView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
         } placeholder: {
-            Image(systemName: "film")
+            Image(systemName: AppDefault.filmSFPath)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundColor(.gray)
+                .foregroundColor(.placeholderApp)
         }
     }
 
@@ -104,7 +104,7 @@ struct DetailsView: View {
                 if viewModel.isLoading {
                     ProgressView().imageScale(.small)
                 } else {
-                    Image(systemName: "play.fill")
+                    Image(systemName: AppDefault.playSFPath)
                 }
                 Text("Watch Trailer".localizedCapitalized)
                     .padding(.leading)
@@ -114,13 +114,13 @@ struct DetailsView: View {
         .padding()
         .frame(maxWidth: .infinity)
         .foregroundColor(.white)
-        .background(AppDefault.tintColor)
+        .background(Color.tintApp)
         .cornerRadius(AppDefault.cornerRadius)
         .disabled(viewModel.isLoading)
     }
 
     private var shareButton: some View {
-        let button = Image(systemName: "square.and.arrow.up")
+        let button = Image(systemName: AppDefault.shareSFPath)
         guard let share = viewModel.shareContent else {
             return AnyView(Button {
                 viewModel.generateShareContent()

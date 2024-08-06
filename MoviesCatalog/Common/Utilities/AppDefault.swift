@@ -15,10 +15,11 @@ enum AppDefault {
         return decoder
     }
 
-
-    static var appBgColor: Color { .dynamicBackground }
-    static var appFgColor: Color { .dynamicText }
     static var cornerRadius: CGFloat = 16
-    static var tintColor: Color { .blue }
-    static var placeholderColor: Color { .gray }
+    static var starSFPath: String = "star.fill"
+    static var filmSFPath: String = "film"
+    static var playSFPath: String = "play.fill"
+    static var shareSFPath: String = "square.and.arrow.up"
+    static var toggleGridOffSFPath: String = "rectangle.grid.1x2"
+    static var toggleGridOnSFPath: String = "square.grid.2x2"
 }

@@ -39,7 +39,7 @@ final class DetailsViewModel: ObservableObject {
             let poster = ImageCacheManager.shared.image(for: posterURL) {
                 poster
             } else {
-                Image(systemName: "film")
+                Image(systemName: AppDefault.filmSFPath)
             }
 
         let item = URL(string: movie.shareLink)!

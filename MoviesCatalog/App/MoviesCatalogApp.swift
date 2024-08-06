@@ -13,7 +13,7 @@ struct MoviesCatalogApp: App {
         WindowGroup {
             NavigationView {
                 let service = TMDB()
-                let viewModel = SearchViewModel(service: service)
+                let viewModel = SearchViewModel(userDefaults: UserDefaults.standard, service: service)
                 SearchView(viewModel: viewModel)
             }
         }

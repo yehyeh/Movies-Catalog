@@ -16,11 +16,16 @@ struct SearchView: View {
 
     var body: some View {
         content
+            .navigationTitle("Search movies".localizedCapitalized)
+            .searchable(text: $viewModel.searchQuery, prompt: "Type to search".localizedCapitalized)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    gridLayoutButton
+                }
+            }
             .onAppear {
                 viewModel.loadInitialData()
             }
-            .navigationTitle("Search movies".localizedCapitalized)
-            .searchable(text: $viewModel.searchQuery, prompt: "Type to search".localizedCapitalized)
     }
 
     var content: some View {
@@ -39,75 +44,66 @@ struct SearchView: View {
         }
     }
 
+    private var gridLayoutButton: some View {
+        Button {
+            viewModel.toggleGridLayout()
+        } label: {
+            Image(systemName: viewModel.isGridLayout ? AppDefault.toggleGridOffSFPath : AppDefault.toggleGridOnSFPath)
+        }
+    }
+    
     func viewFor(movies: [Movie]) -> some View {
+        if viewModel.isGridLayout {
+            AnyView(gridFor(movies: movies))
+        } else {
+            AnyView(listFor(movies: movies))
+        }
+    }
+
+    func gridFor(movies: [Movie]) -> some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160))], spacing: 16) {
+                ForEach(movies) { movie in
+                    NavigationLink {
+                        DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
+                    } label: {
+                        CardView(movie: movie)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+
+    func listFor(movies: [Movie]) -> some View {
         List(movies) { movie in
             NavigationLink {
                 DetailsView(viewModel: DetailsViewModel(movie: movie, service: TMDB()))
             } label: {
-                listItem(movie)
+                ListCellView(movie: movie)
             }
         }
     }
-
-    func listItem(_ movie: Movie) -> some View {
-        HStack {
-            posterImageView(for: movie.posterURL)
-
-            VStack(alignment: .leading) {
-                Text(movie.title)
-                    .font(.headline)
-                Text(movie.releaseYear)
-                    .font(.caption)
-                HStack {
-                    Text("\(movie.voteAverage, specifier: "%.1f")")
-                        .font(.caption).bold()
-                    Image(systemName: "star.fill")
-                        .foregroundColor(.yellow)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    func posterImageView(for url: URL?) -> some View {
-        if let url = url {
-            CachedAsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 100)
-            } placeholder: {
-                ProgressView()
-                    .frame(width: 100)
-            }
-        } else {
-            Image(systemName: "film")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100)
-                .foregroundColor(.gray)
-        }
-    }
-
+    
     func viewForEmptyState(title: String, subtitle: String?) -> some View {
         VStack (alignment: .center) {
-            Image(systemName: "film")
+            Image(systemName: AppDefault.filmSFPath)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .foregroundColor(.gray)
+                .foregroundColor(.placeholderApp)
             Text(title.localizedCapitalized)
                 .font(.title)
-                .foregroundColor(.gray)
+                .foregroundColor(.placeholderApp)
             if let subtitle {
                 Text(subtitle.localizedCapitalized)
                     .font(.title2)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.placeholderApp)
             }
         }
     }
 }
 
 #Preview {
-    SearchView(viewModel: SearchViewModel(service: MockMoviesService()))
+    SearchView(viewModel: SearchViewModel(userDefaults: MockUserDefaults(), service: MockMoviesService()))
 }

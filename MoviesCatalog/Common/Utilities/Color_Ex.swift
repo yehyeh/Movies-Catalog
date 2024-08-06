@@ -15,4 +15,9 @@ extension Color {
     static let dynamicText = Color(UIColor { traitCollection in
         return traitCollection.userInterfaceStyle == .dark ? UIColor.white : UIColor.black
     })
+    
+    /// App Defaults:
+    static var tintApp: Color { .blue }
+    static var placeholderApp: Color { .gray }
+    static var starApp: Color { .yellow }
 }

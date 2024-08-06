@@ -11,32 +11,39 @@ struct CardView: View {
     let movie: Movie
 
     var body: some View {
-        ZStack {
-            posterView
-            VStack {
-                gradientBackground {
-                    infoView
-                }
+        VStack {
+            ZStack {
+                posterView
+                VStack {
+                    gradientBackground {
+                        infoView
+                    }
 
-                Spacer()
+                    Spacer()
+                }
             }
+            .cornerRadius(AppDefault.cornerRadius)
+            .clipped()
+            .shadow(radius: 1)
+
+            Text(movie.title)
+                .font(.subheadline).bold()
+                .foregroundStyle(Color.dynamicText)
+                .lineLimit(1)
         }
-        .frame(width: 120, height: 180)
-        .cornerRadius(AppDefault.cornerRadius)
-        .clipped()
     }
 
     private var infoView: some View {
         HStack() {
             HStack {
                 Text(movie.releaseYear)
-                    .font(.caption).bold()
+                    .font(.subheadline)
             }
             Spacer()
-            Image(systemName: "star.fill")
-                .foregroundColor(.yellow)
+            Image(systemName: AppDefault.starSFPath)
+                .foregroundColor(.starApp)
             Text("\(movie.voteAverage, specifier: "%.1f")")
-                .font(.caption).bold()
+                .font(.subheadline)
         }
     }
 
@@ -51,10 +58,10 @@ struct CardView: View {
                 ProgressView()
             }
         } else {
-            Image(systemName: "film")
+            Image(systemName: AppDefault.filmSFPath)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .foregroundColor(.gray)
+                .foregroundColor(.placeholderApp)
         }
     }
 }
